@@ -1,0 +1,39 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="categories-page">
+    <div class="container">
+        <div class="breadcrumbs">
+            Home > Catalog
+        </div>
+
+        <h1>ALL CATEGORIES</h1>
+
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-md-4">
+                <a href="#" class="category-card" style="background-image: url('{% static category.image %}');">
+                    <div class="category-overlay"></div>
+                    <div class="category-content">
+                        <h2>{{ category.title }}</h2>
+                        <p>{{ category.count }} products</p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <section class="decision-banner">
+    <div class="decision-content">
+        <img class="decision-icon" src="{% static 'images/icons/builder-icon.svg' %}" alt="Builder icon">
+
+        <div>
+            <h2>CAN’T DECIDE?</h2>
+            <p>Build your perfect board with our easy<br>step-by-step builder</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

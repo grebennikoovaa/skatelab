@@ -1,0 +1,150 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="hero" style="background-image: url('{% static "images/hero.jpg" %}');">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <h1>BUILD YOUR PERFECT<br>SKATEBOARD</h1>
+
+        <div class="hero-buttons">
+            <a href="#" class="btn btn-outline-light hero-btn">SHOP NOW</a>
+            <span>OR</span>
+            <a href="#" class="btn btn-outline-light hero-btn">CREATE YOUR OWN SKATE</a>
+        </div>
+    </div>
+</section>
+
+<section class="quick-categories">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="#" class="quick-card">SKATEBOARDS</a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="quick-card">DECKS</a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="quick-card">ACCESSORIES</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="latest-drops">
+    <div class="container">
+        <div class="section-header">
+            <h2>LATEST DROPS</h2>
+            <a href="#" class="btn btn-outline-dark">DISCOVER MORE</a>
+        </div>
+
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-6 col-md-3">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{% static product.image %}" alt="{{ product.brand }}">
+                    </div>
+                    <h3>{{ product.brand }}</h3>
+                    <p>{{ product.description }}</p>
+                    <strong>{{ product.price }}</strong>
+                    <button class="btn btn-outline-dark w-100">ADD TO CART</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="builder-section">
+    <div class="container-fluid px-0">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-6 builder-text">
+                <h2>BUILD YOUR OWN SKATE</h2>
+                <p>Not sure what to choose? Create your custom skateboard</p>
+                <a href="#" class="btn btn-dark">TRY THE BUILDER</a>
+            </div>
+            <div class="col-md-6">
+                <img src="{% static 'images/builder.jpg' %}" alt="Build your own skate">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 feature-item">
+                <h5>Free Shipping</h5>
+                <p>Free shipping on all orders over $70</p>
+            </div>
+            <div class="col-md-4 feature-item">
+                <h5>Secure Payment</h5>
+                <p>100% secure checkout & data protection</p>
+            </div>
+            <div class="col-md-4 feature-item">
+                <h5>Top Rated</h5>
+                <p>Rated 4.8/5 by 800+ customers</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="promo-banners">
+    <div class="container">
+
+        <div class="promo-card promo-accessories" style="background-image: url('{% static "images/banners/banner1.jpg" %}');">
+            <h2>SKATE ACCESSORIES</h2>
+            <a href="#" class="btn btn-outline-light">EXPLORE MORE</a>
+        </div>
+
+        <div class="promo-card promo-hardware text-end" style="background-image: url('{% static "images/banners/banner2.jpg" %}');">
+            <h2>SKATE HARDWARE</h2>
+            <a href="#" class="btn btn-outline-light">EXPLORE MORE</a>
+        </div>
+
+        <div class="promo-card promo-wheels" style="background-image: url('{% static "images/banners/banner3.jpg" %}');">
+            <h2>SKATE WHEELS</h2>
+            <a href="#" class="btn btn-outline-light">EXPLORE MORE</a>
+        </div>
+
+    </div>
+</section>
+
+<section class="testimonials">
+    <div class="container">
+        <h2>WHAT OUR CLIENTS SAY</h2>
+
+        <div class="row g-5">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <img src="{% static 'images/reviews/1.jpg' %}" alt="">
+                    <h5>Wade Warren</h5>
+                    <small>Beginner rider</small>
+                    <p>This was my first skateboard and I love it! Great quality, fast delivery, and super easy to ride.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <img src="{% static 'images/reviews/2.jpg' %}" alt="">
+                    <h5>Kristin Watson</h5>
+                    <small>Street skater</small>
+                    <p>Awesome selection of parts. I built my own setup and everything fits perfectly. Highly recommend!</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <img src="{% static 'images/reviews/3.jpg' %}" alt="">
+                    <h5>Brooklyn Simmons</h5>
+                    <small>Intermediate rider</small>
+                    <p>Good prices and fast shipping. The board feels solid and well-built. Will definitely order again.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
