@@ -7,69 +7,18 @@
     <title>SkateLab</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Google Font: Poppins -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- Custom CSS -->
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
-<header class="site-header">
-    <nav class="navbar navbar-expand-lg bg-white border-bottom">
-        <div class="container">
-            <a class="navbar-brand logo" href="{% url 'shop:home' %}">
-                <img src="{% static 'images/logo.svg' %}" alt="SkateLab">
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto gap-lg-4">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">BRANDS</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">ABOUT</a>
-                    </li>
-                </ul>
-
-                <form class="d-flex search-form">
-                    <input class="form-control" type="search" placeholder="Search...">
-                </form>
-
-                <div class="header-icons ms-lg-4">
-                    <a href="#" class="header-icon">
-        <img src="{% static 'images/icons/profile.svg' %}" alt="Cart">
-    </a>
-    <a href="#" class="header-icon">
-        <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
-    </a>
-
-    <a href="#" class="header-icon">
-        <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
-    </a>
-</div>
-            </div>
-        </div>
-    </nav>
-</header>
 
 <main>
     {% block content %}
@@ -78,8 +27,8 @@
 
 <footer class="footer">
     <div class="container">
-        <div class="row gy-4">
-            <div class="col-md-4">
+        <div class="footer-content">
+            <div class="footer-subscribe">
                 <h5>Skate service subscription 10%</h5>
                 <div class="email-line">
                     <span>Email</span>
@@ -87,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="footer-column">
                 <h5>SHOP</h5>
                 <p>Complete Skateboards</p>
                 <p>Decks</p>
@@ -96,7 +45,7 @@
                 <p>Accessories</p>
             </div>
 
-            <div class="col-md-2">
+            <div class="footer-column">
                 <h5>SUPPORT</h5>
                 <p>Payment</p>
                 <p>Delivery</p>
@@ -104,7 +53,7 @@
                 <p>FAQ</p>
             </div>
 
-            <div class="col-md-2">
+            <div class="footer-column">
                 <h5>COMPANY</h5>
                 <p>About Us</p>
                 <p>Our Story</p>
@@ -112,7 +61,7 @@
                 <p>Blog</p>
             </div>
 
-            <div class="col-md-2">
+            <div class="footer-column">
                 <h5>FOLLOW US</h5>
                 <p>Instagram</p>
                 <p>TikTok</p>
@@ -120,8 +69,10 @@
                 <p>Facebook</p>
             </div>
         </div>
+    </div>
 
-        <div class="footer-bottom">
+    <div class="footer-bottom">
+        <div class="container footer-bottom-inner">
             <span>© 2026 SkateLab. All rights reserved</span>
             <span>Privacy Policy | Terms of Service</span>
         </div>

@@ -5,29 +5,106 @@
 
 <section class="hero" style="background-image: url('{% static "images/hero.jpg" %}');">
     <div class="hero-overlay"></div>
+
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container header-container">
+                <a class="navbar-brand logo" href="{% url 'shop:home' %}">
+                    <img src="{% static 'images/logowhite.svg' %}" alt="SkateLab">
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav mx-auto header-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">SHOP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">CATEGORIES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">BRANDS</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">ABOUT</a>
+                        </li>
+                    </ul>
+
+                    <div class="header-right">
+                        <form class="search-form" action="#" method="get">
+                            <input type="search" placeholder="Search..." aria-label="Search">
+                            <button type="submit" aria-label="Search">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <div class="header-icons">
+                            <a href="#" class="header-icon" aria-label="Account">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+                                    <path d="M4 21C4.7 17 7.7 15 12 15C16.3 15 19.3 17 20 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                </svg>
+                            </a>
+
+                            <a href="#" class="header-icon" aria-label="Wishlist">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M20.8 4.6C19.7 3.5 18.2 3 16.8 3C15.3 3 13.9 3.6 12.9 4.7L12 5.6L11.1 4.7C10.1 3.6 8.7 3 7.2 3C5.8 3 4.3 3.5 3.2 4.6C1 6.9 1 10.5 3.2 12.8L12 21L20.8 12.8C23 10.5 23 6.9 20.8 4.6Z"
+                                          stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+
+                            <a href="#" class="header-icon" aria-label="Cart">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M3 3H5.2L7 15.2C7.1 16.2 8 17 9 17H18.5C19.4 17 20.2 16.4 20.5 15.5L22 8H6"
+                                          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="9" cy="21" r="1.5" fill="currentColor"/>
+                                    <circle cx="18" cy="21" r="1.5" fill="currentColor"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
     <div class="container hero-content">
         <h1>BUILD YOUR PERFECT<br>SKATEBOARD</h1>
 
         <div class="hero-buttons">
-            <a href="#" class="btn btn-outline-light hero-btn">SHOP NOW</a>
+            <a href="#" class="hero-btn">SHOP NOW</a>
             <span>OR</span>
-            <a href="#" class="btn btn-outline-light hero-btn">CREATE YOUR OWN SKATE</a>
+            <a href="#" class="hero-btn">CREATE YOUR OWN SKATE</a>
         </div>
     </div>
 </section>
 
 <section class="quick-categories">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <a href="#" class="quick-card">SKATEBOARDS</a>
-            </div>
-            <div class="col-md-4">
-                <a href="#" class="quick-card">DECKS</a>
-            </div>
-            <div class="col-md-4">
-                <a href="#" class="quick-card">ACCESSORIES</a>
-            </div>
+        <div class="quick-grid">
+            <a href="#" class="quick-card">
+                <span>SKATEBOARDS</span>
+                <span class="quick-line"></span>
+            </a>
+
+            <a href="#" class="quick-card">
+                <span>DECKS</span>
+                <span class="quick-line"></span>
+            </a>
+
+            <a href="#" class="quick-card">
+                <span>ACCESSORIES</span>
+                <span class="quick-line"></span>
+            </a>
         </div>
     </div>
 </section>
@@ -36,20 +113,21 @@
     <div class="container">
         <div class="section-header">
             <h2>LATEST DROPS</h2>
-            <a href="#" class="btn btn-outline-dark">DISCOVER MORE</a>
+            <a href="#" class="discover-btn">DISCOVER MORE</a>
         </div>
 
-        <div class="row g-4">
+        <div class="products-grid">
             {% for product in products %}
-            <div class="col-6 col-md-3">
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="{% static product.image %}" alt="{{ product.brand }}">
-                    </div>
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{% static product.image %}" alt="{{ product.brand }}">
+                </div>
+
+                <div class="product-info">
                     <h3>{{ product.brand }}</h3>
                     <p>{{ product.description }}</p>
                     <strong>{{ product.price }}</strong>
-                    <button class="btn btn-outline-dark w-100">ADD TO CART</button>
+                    <button>ADD TO CART</button>
                 </div>
             </div>
             {% endfor %}
@@ -58,32 +136,40 @@
 </section>
 
 <section class="builder-section">
-    <div class="container-fluid px-0">
-        <div class="row g-0 align-items-center">
-            <div class="col-md-6 builder-text">
-                <h2>BUILD YOUR OWN SKATE</h2>
-                <p>Not sure what to choose? Create your custom skateboard</p>
-                <a href="#" class="btn btn-dark">TRY THE BUILDER</a>
-            </div>
-            <div class="col-md-6">
-                <img src="{% static 'images/builder.jpg' %}" alt="Build your own skate">
-            </div>
+    <div class="container builder-container">
+        <div class="builder-text">
+            <h2>BUILD YOUR OWN SKATE</h2>
+            <p>Not sure what to choose? Create your custom skateboard</p>
+            <a href="#">TRY THE BUILDER</a>
+        </div>
+
+        <div class="builder-image">
+            <img src="{% static 'images/builder.jpg' %}" alt="Build your own skate">
         </div>
     </div>
 </section>
 
 <section class="features">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-4 feature-item">
+    <div class="container features-container">
+        <div class="feature-item">
+            <span class="feature-icon">▱</span>
+            <div>
                 <h5>Free Shipping</h5>
                 <p>Free shipping on all orders over $70</p>
             </div>
-            <div class="col-md-4 feature-item">
+        </div>
+
+        <div class="feature-item">
+            <span class="feature-icon">▢</span>
+            <div>
                 <h5>Secure Payment</h5>
                 <p>100% secure checkout & data protection</p>
             </div>
-            <div class="col-md-4 feature-item">
+        </div>
+
+        <div class="feature-item">
+            <span class="feature-icon">☆</span>
+            <div>
                 <h5>Top Rated</h5>
                 <p>Rated 4.8/5 by 800+ customers</p>
             </div>
@@ -93,22 +179,20 @@
 
 <section class="promo-banners">
     <div class="container">
-
-        <div class="promo-card promo-accessories" style="background-image: url('{% static "images/banners/banner1.jpg" %}');">
+        <div class="promo-card promo-left" style="background-image: url('{% static "images/banners/banner1.jpg" %}');">
             <h2>SKATE ACCESSORIES</h2>
-            <a href="#" class="btn btn-outline-light">EXPLORE MORE</a>
+            <a href="#">EXPLORE MORE</a>
         </div>
 
-        <div class="promo-card promo-hardware text-end" style="background-image: url('{% static "images/banners/banner2.jpg" %}');">
+        <div class="promo-card promo-right" style="background-image: url('{% static "images/banners/banner2.jpg" %}');">
             <h2>SKATE HARDWARE</h2>
-            <a href="#" class="btn btn-outline-light">EXPLORE MORE</a>
+            <a href="#">EXPLORE MORE</a>
         </div>
 
-        <div class="promo-card promo-wheels" style="background-image: url('{% static "images/banners/banner3.jpg" %}');">
+        <div class="promo-card promo-left" style="background-image: url('{% static "images/banners/banner3.jpg" %}');">
             <h2>SKATE WHEELS</h2>
-            <a href="#" class="btn btn-outline-light">EXPLORE MORE</a>
+            <a href="#">EXPLORE MORE</a>
         </div>
-
     </div>
 </section>
 
@@ -116,32 +200,26 @@
     <div class="container">
         <h2>WHAT OUR CLIENTS SAY</h2>
 
-        <div class="row g-5">
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <img src="{% static 'images/reviews/1.jpg' %}" alt="">
-                    <h5>Wade Warren</h5>
-                    <small>Beginner rider</small>
-                    <p>This was my first skateboard and I love it! Great quality, fast delivery, and super easy to ride.</p>
-                </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <img src="{% static 'images/reviews/1.jpg' %}" alt="Wade Warren">
+                <h5>Wade Warren</h5>
+                <small>Beginner rider</small>
+                <p>This was my first skateboard and I love it! Great quality, fast delivery, and super easy to ride.</p>
             </div>
 
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <img src="{% static 'images/reviews/2.jpg' %}" alt="">
-                    <h5>Kristin Watson</h5>
-                    <small>Street skater</small>
-                    <p>Awesome selection of parts. I built my own setup and everything fits perfectly. Highly recommend!</p>
-                </div>
+            <div class="testimonial-card">
+                <img src="{% static 'images/reviews/2.jpg' %}" alt="Kristin Watson">
+                <h5>Kristin Watson</h5>
+                <small>Street skater</small>
+                <p>Awesome selection of parts. I built my own setup and everything fits perfectly. Highly recommend!</p>
             </div>
 
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <img src="{% static 'images/reviews/3.jpg' %}" alt="">
-                    <h5>Brooklyn Simmons</h5>
-                    <small>Intermediate rider</small>
-                    <p>Good prices and fast shipping. The board feels solid and well-built. Will definitely order again.</p>
-                </div>
+            <div class="testimonial-card">
+                <img src="{% static 'images/reviews/3.jpg' %}" alt="Brooklyn Simmons">
+                <h5>Brooklyn Simmons</h5>
+                <small>Intermediate rider</small>
+                <p>Good prices and fast shipping. The board feels solid and well-built. Will definitely order again.</p>
             </div>
         </div>
     </div>
