@@ -3,36 +3,94 @@
 
 {% block content %}
 
+<header class="category-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container category-header-container">
+            <a class="navbar-brand category-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#categoryNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="categoryNavbar">
+                <ul class="navbar-nav mx-auto category-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="category-header-right">
+                    <form class="category-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="category-header-icons">
+                        <a href="#">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
 <section class="categories-page">
     <div class="container">
         <div class="breadcrumbs">
-            Home > Catalog
+            <a href="{% url 'shop:home' %}">Home</a>
+            <span>›</span>
+            <span>Catalog</span>
         </div>
 
-        <h2>ALL CATEGORIES</h2>
+        <h1>ALL CATEGORIES</h1>
 
-        <div class="row g-4">
+        <div class="categories-grid">
             {% for category in categories %}
-            <div class="col-md-4">
-                <a href="#" class="category-card" style="background-image: url('{% static category.image %}');">
-                    <div class="category-overlay"></div>
-                    <div class="category-content">
-                        <h2>{{ category.title }}</h2>
-                        <p>{{ category.count }} products</p>
-                    </div>
-                </a>
-            </div>
+            <a href="{% if category.title == 'COMPLETE SKATEBOARDS' %}{% url 'shop:complete_skateboards' %}{% else %}#{% endif %}" class="category-card" style="background-image: url('{% static category.image %}');">
+                <div class="category-overlay"></div>
+
+                <div class="category-content">
+                    <h2>{{ category.title }}</h2>
+                    <p>{{ category.count }} products</p>
+                </div>
+            </a>
             {% endfor %}
         </div>
 
         <section class="decision-banner">
-    <div class="decision-content">
-        <img class="decision-icon" src="{% static 'images/icons/builder-icon.svg' %}" alt="Builder icon">
+            <div class="decision-content">
+                <img class="decision-icon" src="{% static 'images/icons/builder-icon.svg' %}" alt="Builder icon">
 
-        <div>
-            <h2>CAN’T DECIDE?</h2>
-            <p>Build your perfect board with our easy<br>step-by-step builder</p>
-        </div>
+                <div>
+                    <h2>CAN’T DECIDE?</h2>
+                    <p>Build your perfect board with our easy<br>step-by-step builder</p>
+                </div>
+            </div>
+        </section>
     </div>
 </section>
 

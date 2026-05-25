@@ -1,0 +1,284 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#catalogNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="catalogNavbar">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="#">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="catalog-hero">
+    <div class="container catalog-hero-container">
+        <div>
+            <h1>COMPLETE SKATEBOARDS</h1>
+            <div class="catalog-breadcrumbs">
+                <a href="{% url 'shop:categories' %}">Catalog</a>
+                <span>›</span>
+                <span>Complete Skateboards</span>
+            </div>
+        </div>
+
+        <img src="{% static 'images/category-hero/complete-skateboards.png' %}" alt="Complete Skateboards">
+    </div>
+</section>
+
+<section class="catalog-page">
+    <div class="container catalog-layout">
+
+        <aside class="filters">
+            <form method="get" class="filters-form">
+
+                <div class="filters-top">
+                    <h3>Filters ({{ active_filters_count }})</h3>
+                    <button type="submit" class="apply-filters-btn">Apply</button>
+                    <a href="{% url 'shop:complete_skateboards' %}" class="clear-filters-btn">Clear</a>
+                </div>
+
+                <div class="filter-block">
+                    <h4>Price</h4>
+
+                    <div class="price-slider-row">
+                        <button type="button" class="range-minus" id="priceMinus">−</button>
+
+                        <input
+                            type="range"
+                            id="maxPriceRange"
+                            min="59"
+                            max="503"
+                            step="1"
+                            value="{{ max_price }}"
+                            class="price-range"
+                        >
+
+                        <button type="button" class="range-plus" id="pricePlus">+</button>
+                    </div>
+
+                    <div class="price-inputs">
+                        <label>
+                            <span>$</span>
+                            <input type="number" name="min_price" id="minPriceInput" value="{{ min_price }}" min="0">
+                        </label>
+
+                        <span class="price-dash"></span>
+
+                        <label>
+                            <span>$</span>
+                            <input type="number" name="max_price" id="maxPriceInput" value="{{ max_price }}" min="0">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-block">
+                    <h4>Brand</h4>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="brand" value="ELEMENT" {% if "ELEMENT" in selected_brands %}checked{% endif %}>
+                        <span>Element</span>
+                        <em>(18)</em>
+                    </label>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="brand" value="SANTA CRUZ" {% if "SANTA CRUZ" in selected_brands %}checked{% endif %}>
+                        <span>Santa Cruz</span>
+                        <em>(15)</em>
+                    </label>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="brand" value="PLAN B" {% if "PLAN B" in selected_brands %}checked{% endif %}>
+                        <span>Plan B</span>
+                        <em>(11)</em>
+                    </label>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="brand" value="ZERO" {% if "ZERO" in selected_brands %}checked{% endif %}>
+                        <span>Zero</span>
+                        <em>(9)</em>
+                    </label>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="brand" value="ALMOST" {% if "ALMOST" in selected_brands %}checked{% endif %}>
+                        <span>Almost</span>
+                        <em>(8)</em>
+                    </label>
+
+                    <a href="#" class="show-more">Show more</a>
+                </div>
+
+                <div class="filter-block">
+    <h4>Level</h4>
+
+    <label class="checkbox-row">
+        <input type="checkbox" name="level" value="Beginner" {% if "Beginner" in selected_levels %}checked{% endif %}>
+        <span>Beginner</span>
+        <em>(57)</em>
+    </label>
+
+    <label class="checkbox-row">
+        <input type="checkbox" name="level" value="Intermediate" {% if "Intermediate" in selected_levels %}checked{% endif %}>
+        <span>Intermediate</span>
+        <em>(70)</em>
+    </label>
+
+    <label class="checkbox-row">
+        <input type="checkbox" name="level" value="Pro" {% if "Pro" in selected_levels %}checked{% endif %}>
+        <span>Pro</span>
+        <em>(18)</em>
+    </label>
+</div>
+
+                <div class="filter-block no-border">
+                    <h4>Width</h4>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="width" value="w75" {% if "w75" in selected_widths %}checked{% endif %}>
+                        <span>7,5"</span>
+                        <em>(15)</em>
+                    </label>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="width" value="w775" {% if "w775" in selected_widths %}checked{% endif %}>
+                        <span>7,75"</span>
+                        <em>(22)</em>
+                    </label>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="width" value="w80" {% if "w80" in selected_widths %}checked{% endif %}>
+                        <span>8,0" and above</span>
+                        <em>(24)</em>
+                    </label>
+                </div>
+
+            </form>
+        </aside>
+
+        <div class="catalog-products">
+            {% if products %}
+                {% for product in products %}
+                <article class="catalog-product-card">
+                    <a href="{% url 'shop:product_detail' product.slug %}" class="catalog-product-image">
+                        <img src="{% static product.image %}" alt="{{ product.name }}">
+                    </a>
+
+                    <a href="{% url 'shop:product_detail' product.slug %}" class="catalog-product-title-link">
+                        <h3>{{ product.brand }}</h3>
+                        <p class="catalog-product-name">{{ product.name }}</p>
+                    </a>
+
+                    <div class="catalog-product-line"></div>
+                    <p class="catalog-product-description">{{ product.description }}</p>
+                    <strong>{{ product.price }}</strong>
+
+                    <button>ADD TO CART</button>
+                </article>
+                {% endfor %}
+            {% else %}
+                <div class="catalog-empty">
+                    No products found
+                </div>
+            {% endif %}
+
+            <div class="pagination">
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <span>...</span>
+                <a href="#">9</a>
+                <a href="#">10</a>
+                <a href="#">NEXT ›</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    const maxPriceRange = document.getElementById("maxPriceRange");
+    const maxPriceInput = document.getElementById("maxPriceInput");
+    const priceMinus = document.getElementById("priceMinus");
+    const pricePlus = document.getElementById("pricePlus");
+
+    if (maxPriceRange && maxPriceInput && priceMinus && pricePlus) {
+        maxPriceRange.addEventListener("input", function () {
+            maxPriceInput.value = maxPriceRange.value;
+        });
+
+        maxPriceInput.addEventListener("input", function () {
+            maxPriceRange.value = maxPriceInput.value;
+        });
+
+        priceMinus.addEventListener("click", function () {
+            let value = parseInt(maxPriceRange.value || 59);
+            value = Math.max(59, value - 10);
+            maxPriceRange.value = value;
+            maxPriceInput.value = value;
+        });
+
+        pricePlus.addEventListener("click", function () {
+            let value = parseInt(maxPriceRange.value || 59);
+            value = Math.min(503, value + 10);
+            maxPriceRange.value = value;
+            maxPriceInput.value = value;
+        });
+    }
+</script>
+
+<script>
+    document.querySelectorAll(".filters-form input[type='checkbox']").forEach(function (checkbox) {
+        checkbox.addEventListener("change", function () {
+            checkbox.closest("form").submit();
+        });
+    });
+</script>
+
+{% endblock %}

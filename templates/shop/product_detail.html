@@ -1,0 +1,216 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#productNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="productNavbar">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="#">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="product-page">
+    <div class="container">
+
+        <div class="product-breadcrumbs">
+            <a href="{% url 'shop:complete_skateboards' %}">Complete Skateboards</a>
+            <span>›</span>
+            <span>{{ product.name }}</span>
+        </div>
+
+        <div class="product-layout">
+            <div class="product-media">
+                <div class="product-thumbs">
+                    {% for image in product.gallery %}
+                    <button class="product-thumb" type="button">
+                        <img src="{% static image %}" alt="{{ product.name }}">
+                    </button>
+                    {% endfor %}
+                </div>
+
+                <div class="product-main-image">
+                    <img id="mainProductImage" src="{% static product.image %}" alt="{{ product.name }}">
+                </div>
+            </div>
+
+            <div class="product-info-block">
+                <h1>{{ product.title }}</h1>
+                <strong class="product-price">{{ product.price }}</strong>
+
+                <div class="product-rating-row">
+                    <div class="stars">★★★★☆</div>
+                    <span>{{ product.rating }} ({{ product.reviews }} reviews)</span>
+                    <span class="stock-dot"></span>
+                    <span>In Stock</span>
+                </div>
+
+                <p class="product-long-description">
+                    {{ product.long_description }}
+                </p>
+
+                <div class="product-option">
+                    <h4>Width</h4>
+                    <div class="width-options">
+                        <button>7.75"</button>
+                        <button>8.0"</button>
+                        <button>8.25"</button>
+                    </div>
+                </div>
+
+                <div class="product-option">
+                    <h4>Quantity</h4>
+                    <div class="quantity-control">
+                        <button type="button">−</button>
+                        <span>1</span>
+                        <button type="button">+</button>
+                    </div>
+                </div>
+
+                <div class="product-actions">
+                    <button class="product-cart-btn">ADD TO CART</button>
+                    <button class="product-heart-btn">♡</button>
+                </div>
+
+                <div class="product-benefits">
+                    <div>
+                        <span>▱</span>
+                        <h5>Free Shipping</h5>
+                        <p>Free shipping on all orders over $99</p>
+                    </div>
+
+                    <div>
+                        <span>▢</span>
+                        <h5>Secure Payment</h5>
+                        <p>100% secure checkout & data protection</p>
+                    </div>
+
+                    <div>
+                        <span>☆</span>
+                        <h5>Top Rated</h5>
+                        <p>Rated 4.8/5 by 500+ customers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-tabs">
+            <div class="tabs-nav">
+                <button class="active">Description</button>
+                <button>Specifications</button>
+                <button>Reviews ({{ product.reviews }})</button>
+            </div>
+
+            <div class="tabs-content">
+                <p>{{ product.long_description }}</p>
+
+                <ul>
+                    {% for spec in product.specs %}
+                    <li>{{ spec }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="related-section">
+    <div class="container">
+        <h2>YOU MAY ALSO LIKE</h2>
+
+        <div class="related-grid">
+            {% for item in related_products %}
+            <article class="related-card">
+                <a href="{% url 'shop:product_detail' item.slug %}" class="related-image">
+                    <img src="{% static item.image %}" alt="{{ item.name }}">
+                </a>
+
+                <h3>{{ item.brand }}</h3>
+                <p>{{ item.name }}</p>
+                <div class="related-line"></div>
+                <p>{{ item.description }}</p>
+                <strong>{{ item.price }}</strong>
+
+                <button>ADD TO CART</button>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="unique-banner">
+    <div class="container">
+        <div class="unique-banner-inner">
+            <img src="{% static 'images/icons/builder-icon.svg' %}" alt="Builder icon">
+
+            <div>
+                <h2>WANT SOMETHING UNIQUE?</h2>
+                <p>Build your own custom skateboard with our easy<br>step-by-step skateboard builder.</p>
+            </div>
+
+            <a href="#">TRY THE BUILDER</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    const mainProductImage = document.getElementById("mainProductImage");
+    const productThumbs = document.querySelectorAll(".product-thumb img");
+
+    productThumbs.forEach(function (thumb) {
+        thumb.addEventListener("click", function () {
+            mainProductImage.src = thumb.src;
+        });
+    });
+</script>
+
+{% endblock %}
