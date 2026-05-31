@@ -1,1 +1,1 @@
-# skatelab
+# SkateLab - website for selling skateboards and attributes for skating
