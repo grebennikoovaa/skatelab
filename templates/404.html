@@ -1,0 +1,177 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>404 Page Not Found | SkateLab</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --dark: #2f2c2f;
+            --light-gray: #d9d9d9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--light-gray);
+            font-family: 'Poppins', Arial, sans-serif;
+            color: var(--dark);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+        }
+
+        .error-page {
+            width: 100%;
+            max-width: 1480px;
+            min-height: 860px;
+            background: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 70px 24px;
+        }
+
+        .error-content {
+            width: 100%;
+            max-width: 620px;
+            text-align: center;
+        }
+
+        .error-image {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto -34px;
+        }
+
+        .error-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .error-code {
+            margin: 0;
+            color: var(--dark);
+            font-size: 150px;
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: 4px;
+        }
+
+        .error-title {
+            margin: 22px 0 18px;
+            color: var(--dark);
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 42px;
+            text-transform: uppercase;
+        }
+
+        .error-text {
+            margin: 0 0 42px;
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 30px;
+        }
+
+        .error-button {
+            width: 300px;
+            height: 52px;
+            border: 1px solid var(--dark);
+            background: transparent;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 22px;
+
+            color: var(--dark);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .error-button span {
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .error-button:hover {
+            background: var(--dark);
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .error-page {
+                min-height: 100vh;
+                padding: 50px 20px;
+            }
+
+            .error-code {
+                font-size: 100px;
+            }
+
+            .error-title {
+                font-size: 24px;
+                line-height: 34px;
+            }
+
+            .error-text {
+                font-size: 15px;
+                line-height: 24px;
+            }
+
+            .error-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<main class="error-page">
+    <div class="error-content">
+        <div class="error-image">
+            <img src="{% static 'images/errors/404.png' %}" alt="Skateboard in ice cube">
+        </div>
+
+        <h1 class="error-code">404</h1>
+
+        <h2 class="error-title">PAGE NOT FOUND</h2>
+
+        <p class="error-text">
+            sorry, but the page that you requested doesn’t exist
+        </p>
+
+        <a href="{% url 'shop:home' %}" class="error-button">
+            BACK TO HOME
+            <span>→</span>
+        </a>
+    </div>
+</main>
+
+</body>
+</html>

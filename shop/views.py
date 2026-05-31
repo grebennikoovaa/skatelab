@@ -159,5 +159,7 @@ def logout_view(request):
     return redirect('shop:home')
 
 
+def custom_404_preview(request):
+    return render(request, '404.html', status=404)
 
 
