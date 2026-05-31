@@ -1,0 +1,416 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .customer-profile-page {
+        min-height: 920px;
+        padding: 72px 0 180px;
+        background: #ffffff;
+        color: #2f2c2f;
+        font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .customer-profile-page * {
+        box-sizing: border-box;
+    }
+
+    .customer-profile-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 54px;
+    }
+
+    .customer-profile-top h1 {
+        margin: 0;
+        color: #2f2c2f;
+        font-size: 44px;
+        font-weight: 700;
+        line-height: 60px;
+        text-transform: uppercase;
+    }
+
+    .customer-logout {
+        min-width: 120px;
+        height: 44px;
+        border: 1px solid #2f2c2f;
+        background: transparent;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #2f2c2f;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+
+    .customer-logout:hover {
+        background: #2f2c2f;
+        color: #ffffff;
+    }
+
+    .profile-tabs {
+        max-width: 700px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 52px;
+    }
+
+    .profile-tabs button {
+        height: 42px;
+        border: 0;
+        border-bottom: 1px solid #777777;
+        background: transparent;
+
+        color: #2f2c2f;
+        font-family: 'Poppins', Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        cursor: pointer;
+    }
+
+    .profile-tabs button.active {
+        border-bottom: 3px solid #2f2c2f;
+        font-weight: 500;
+    }
+
+    .profile-panel {
+        max-width: 1160px;
+        border: 1px solid #2f2c2f;
+        border-radius: 2px;
+        padding: 44px 72px 52px;
+        margin-bottom: 30px;
+        background: #ffffff;
+    }
+
+    .profile-panel h2 {
+        margin: 0 0 34px;
+        color: #2f2c2f;
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 38px;
+    }
+
+    .profile-data-list {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .profile-data-row {
+        min-height: 54px;
+        border: 1px solid #777777;
+        padding: 0 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+
+        background: #ffffff;
+    }
+
+    .profile-data-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+    }
+
+    .profile-row-icon {
+        width: 20px;
+        min-width: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #2f2c2f;
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    .profile-row-icon img {
+        width: 18px;
+        height: 18px;
+        display: block;
+    }
+
+    .profile-data-left p {
+        margin: 0;
+        color: #2f2c2f;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .profile-data-left small {
+        display: block;
+        margin-top: 6px;
+        color: #999999;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    .profile-data-row button {
+        border: 0;
+        background: transparent;
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        color: #2f2c2f;
+        font-family: 'Poppins', Arial, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        cursor: pointer;
+    }
+
+    .profile-data-row button img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .profile-data-row.no-action {
+        justify-content: flex-start;
+        min-height: 76px;
+    }
+
+    .profile-data-row.no-action .profile-data-left {
+        align-items: flex-start;
+    }
+
+    @media (max-width: 991px) {
+        .customer-profile-top {
+            flex-direction: column;
+        }
+
+        .profile-tabs {
+            grid-template-columns: 1fr;
+            max-width: 100%;
+        }
+
+        .profile-panel {
+            padding: 34px 24px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .customer-profile-page {
+            padding: 46px 0 90px;
+        }
+
+        .customer-profile-top h1 {
+            font-size: 32px;
+            line-height: 42px;
+        }
+
+        .profile-data-row {
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 16px;
+        }
+
+        .profile-data-row button {
+            align-self: flex-end;
+        }
+    }
+</style>
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#profileNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="profileNavbar">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="{% url 'shop:profile' %}">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="customer-profile-page">
+    <div class="container">
+
+        <div class="customer-profile-top">
+            <h1>
+                HEY,
+                {% if request.user.first_name %}
+                    {{ request.user.first_name }} {{ request.user.last_name }}
+                {% else %}
+                    {{ request.user.username }}
+                {% endif %}
+            </h1>
+
+            <a href="{% url 'shop:logout' %}" class="customer-logout">LOG OUT</a>
+        </div>
+
+        <div class="profile-tabs">
+            <button class="active" type="button">User Data</button>
+            <button type="button">Order History</button>
+            <button type="button">Favorite Items (3)</button>
+        </div>
+
+        <div class="profile-panel">
+            <h2>Personal Data</h2>
+
+            <div class="profile-data-list">
+
+                <div class="profile-data-row">
+                    <div class="profile-data-left">
+                        <span class="profile-row-icon">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="">
+                        </span>
+
+                        <div>
+                            <p>Name, last name</p>
+                            <small>
+                                {% if request.user.first_name or request.user.last_name %}
+                                    {{ request.user.first_name }} {{ request.user.last_name }}
+                                {% else %}
+                                    Not added
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+
+                    <button type="button">
+                        ✎ Add
+                    </button>
+                </div>
+
+                <div class="profile-data-row">
+                    <div class="profile-data-left">
+                        <span class="profile-row-icon">☏</span>
+
+                        <div>
+                            <p>Phone number</p>
+                            <small>Not added</small>
+                        </div>
+                    </div>
+
+                    <button type="button">
+                        ✎ Add
+                    </button>
+                </div>
+
+                <div class="profile-data-row">
+                    <div class="profile-data-left">
+                        <span class="profile-row-icon">✉</span>
+
+                        <div>
+                            <p>Email</p>
+                            <small>{{ request.user.email|default:"Not added" }}</small>
+                        </div>
+                    </div>
+
+                    <button type="button">
+                        ✎ Add
+                    </button>
+                </div>
+
+                <div class="profile-data-row">
+                    <div class="profile-data-left">
+                        <span class="profile-row-icon">◎</span>
+
+                        <div>
+                            <p>Your city</p>
+                            <small>Not added</small>
+                        </div>
+                    </div>
+
+                    <button type="button">
+                        ✎ Add
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="profile-panel">
+            <h2>Login and password</h2>
+
+            <div class="profile-data-list">
+
+                <div class="profile-data-row no-action">
+                    <div class="profile-data-left">
+                        <span class="profile-row-icon">▢</span>
+
+                        <div>
+                            <p>Login</p>
+                            <small>{{ request.user.email|default:request.user.username }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-data-row no-action">
+                    <div class="profile-data-left">
+                        <span class="profile-row-icon">⌕</span>
+
+                        <div>
+                            <p>Password</p>
+                            <small>••••••••••••••••</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

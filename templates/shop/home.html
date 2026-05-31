@@ -48,12 +48,9 @@
                         </form>
 
                         <div class="header-icons">
-                            <a href="#" class="header-icon" aria-label="Account">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
-                                    <path d="M4 21C4.7 17 7.7 15 12 15C16.3 15 19.3 17 20 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                                </svg>
-                            </a>
+                            <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+    <img src="{% static 'images/icons/profilelight.svg' %}" alt="Profile">
+</a>
 
                             <a href="#" class="header-icon" aria-label="Wishlist">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -120,13 +117,13 @@
             {% for product in products %}
             <div class="product-card">
                 <div class="product-image">
-                    <img src="{% static product.image %}" alt="{{ product.brand }}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
                 </div>
 
                 <div class="product-info">
-                    <h3>{{ product.brand }}</h3>
-                    <p>{{ product.description }}</p>
-                    <strong>{{ product.price }}</strong>
+                    <h3>{{ product.brand }} {{ product.name }}</h3>
+<p>{{ product.description }}</p>
+<strong>{{ product.price_display }}</strong>
                     <button>ADD TO CART</button>
                 </div>
             </div>

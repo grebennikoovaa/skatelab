@@ -42,12 +42,12 @@
                     </form>
 
                     <div class="category-header-icons">
-                        <a href="#">
-                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
-                        </a>
-                        <a href="#">
-                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
-                        </a>
+                        <a href="{% url 'shop:profile' %}">
+    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+</a>
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+</a>
                         <a href="#">
                             <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
                         </a>
@@ -70,12 +70,12 @@
 
         <div class="categories-grid">
             {% for category in categories %}
-            <a href="{% if category.title == 'COMPLETE SKATEBOARDS' %}{% url 'shop:complete_skateboards' %}{% else %}#{% endif %}" class="category-card" style="background-image: url('{% static category.image %}');">
+            <a href="{{ category.get_absolute_url }}" class="category-card" style="background-image: url('{{ category.image.url }}');">
                 <div class="category-overlay"></div>
 
                 <div class="category-content">
                     <h2>{{ category.title }}</h2>
-                    <p>{{ category.count }} products</p>
+<p>{{ category.product_count }} products</p>
                 </div>
             </a>
             {% endfor %}

@@ -42,9 +42,9 @@
                     </form>
 
                     <div class="catalog-header-icons">
-                        <a href="#">
-                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
-                        </a>
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+</a>
                         <a href="#">
                             <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
                         </a>
@@ -207,7 +207,7 @@
                 {% for product in products %}
                 <article class="catalog-product-card">
                     <a href="{% url 'shop:product_detail' product.slug %}" class="catalog-product-image">
-                        <img src="{% static product.image %}" alt="{{ product.name }}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
                     </a>
 
                     <a href="{% url 'shop:product_detail' product.slug %}" class="catalog-product-title-link">
@@ -217,7 +217,7 @@
 
                     <div class="catalog-product-line"></div>
                     <p class="catalog-product-description">{{ product.description }}</p>
-                    <strong>{{ product.price }}</strong>
+                    <strong>{{ product.price_display }}</strong>
 
                     <button>ADD TO CART</button>
                 </article>

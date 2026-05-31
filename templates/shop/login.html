@@ -1,0 +1,278 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | SkateLab</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --dark: #2f2c2f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+            color: var(--dark);
+            background: #ffffff;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .auth-page {
+            width: 100%;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #ffffff;
+        }
+
+        .auth-image {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .auth-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .auth-content {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 80px;
+            background: #ffffff;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .auth-card h1 {
+            margin: 0 0 22px;
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 60px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .auth-subtitle {
+            margin: 0 0 38px;
+            font-size: 16px;
+            line-height: 28px;
+            text-align: center;
+        }
+
+        .auth-subtitle strong {
+            font-weight: 700;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .auth-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .auth-field label {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .auth-field input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #777777;
+            background: #ffffff;
+            padding: 0 14px;
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .auth-password-wrap {
+            position: relative;
+        }
+
+        .auth-password-wrap input {
+            padding-right: 46px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .auth-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .auth-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .auth-checkbox input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+        }
+
+        .auth-muted-link {
+            color: #777777;
+            font-size: 13px;
+        }
+
+        .auth-submit {
+            width: 100%;
+            height: 56px;
+            border: 1px solid var(--dark);
+            background: var(--dark);
+            color: #ffffff;
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .auth-switch {
+            margin: 26px 0 0;
+            color: #999999;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .auth-switch a {
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .auth-errors,
+        .auth-form ul {
+            color: #b00020;
+            font-size: 12px;
+        }
+
+        @media (max-width: 991px) {
+            .auth-page {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-image {
+                height: 360px;
+            }
+
+            .auth-content {
+                min-height: auto;
+                padding: 60px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<section class="auth-page">
+    <div class="auth-image">
+        <img src="{% static 'images/auth/login.jpg' %}" alt="Skate park">
+    </div>
+
+    <div class="auth-content">
+        <div class="auth-card">
+            <h1>WELCOME BACK</h1>
+
+            <p class="auth-subtitle">
+                Ready to continue your skate journey?<br>
+                <strong>Your path is right here.</strong>
+            </p>
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="auth-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="auth-field">
+                    <label>Email</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="auth-field">
+                    <label>Password</label>
+                    <div class="auth-password-wrap">
+                        {{ form.password }}
+                        <button type="button" class="password-toggle">👁</button>
+                    </div>
+                    {{ form.password.errors }}
+                </div>
+
+                <div class="auth-row">
+                    <label class="auth-checkbox">
+                        {{ form.remember_me }}
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="#" class="auth-muted-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="auth-submit">SIGN IN</button>
+            </form>
+
+            <p class="auth-switch">
+                Don’t have an account?
+                <a href="{% url 'shop:register' %}">Sign up</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll(".password-toggle").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const input = button.closest(".auth-password-wrap").querySelector("input");
+            input.type = input.type === "password" ? "text" : "password";
+        });
+    });
+</script>
+
+</body>
+</html>

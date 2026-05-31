@@ -42,9 +42,9 @@
                     </form>
 
                     <div class="catalog-header-icons">
-                        <a href="#">
-                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
-                        </a>
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+</a>
                         <a href="#">
                             <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
                         </a>
@@ -70,21 +70,21 @@
         <div class="product-layout">
             <div class="product-media">
                 <div class="product-thumbs">
-                    {% for image in product.gallery %}
-                    <button class="product-thumb" type="button">
-                        <img src="{% static image %}" alt="{{ product.name }}">
-                    </button>
-                    {% endfor %}
+                    {% for gallery_image in product.gallery_images.all %}
+<button class="product-thumb" type="button">
+    <img src="{{ gallery_image.image.url }}" alt="{{ gallery_image.alt_text|default:product.name }}">
+</button>
+{% endfor %}
                 </div>
 
                 <div class="product-main-image">
-                    <img id="mainProductImage" src="{% static product.image %}" alt="{{ product.name }}">
+                    <img id="mainProductImage" src="{{ product.image.url }}" alt="{{ product.name }}">
                 </div>
             </div>
 
             <div class="product-info-block">
                 <h1>{{ product.title }}</h1>
-                <strong class="product-price">{{ product.price }}</strong>
+               <strong class="product-price">{{ product.price_display }}</strong>
 
                 <div class="product-rating-row">
                     <div class="stars">★★★★☆</div>
@@ -153,9 +153,9 @@
                 <p>{{ product.long_description }}</p>
 
                 <ul>
-                    {% for spec in product.specs %}
-                    <li>{{ spec }}</li>
-                    {% endfor %}
+                    {% for spec in product.specifications.all %}
+<li>{{ spec.text }}</li>
+{% endfor %}
                 </ul>
             </div>
         </div>
@@ -171,14 +171,14 @@
             {% for item in related_products %}
             <article class="related-card">
                 <a href="{% url 'shop:product_detail' item.slug %}" class="related-image">
-                    <img src="{% static item.image %}" alt="{{ item.name }}">
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}">
                 </a>
 
                 <h3>{{ item.brand }}</h3>
                 <p>{{ item.name }}</p>
                 <div class="related-line"></div>
                 <p>{{ item.description }}</p>
-                <strong>{{ item.price }}</strong>
+                <strong>{{ item.price_display }}</strong>
 
                 <button>ADD TO CART</button>
             </article>
