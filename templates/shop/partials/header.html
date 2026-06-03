@@ -1,0 +1,52 @@
+{% load static %}
+
+<header class="account-site-header">
+    <div class="account-header-inner">
+
+        <a href="{% url 'shop:home' %}" class="account-header-logo">
+            <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+        </a>
+
+        <nav class="account-header-nav">
+            <a href="{% url 'shop:home' %}">SHOP</a>
+            <a href="{% url 'shop:categories' %}">CATEGORIES</a>
+            <a href="#">BUILD YOUR SKATE</a>
+            <a href="#">BRANDS</a>
+            <a href="#">ABOUT</a>
+        </nav>
+
+        <div class="account-header-actions">
+            <form class="account-header-search" action="#" method="get">
+                <input type="search" placeholder="Search...">
+                <button type="submit">
+                    <img src="{% static 'images/icons/search.svg' %}" alt="Search">
+                </button>
+            </form>
+
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'shop:profile' %}" class="account-header-icon">
+                    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                </a>
+            {% else %}
+                <a href="{% url 'shop:register' %}" class="account-header-icon">
+                    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                </a>
+            {% endif %}
+
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'shop:favorites' %}" class="account-header-icon">
+                    <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+                </a>
+            {% else %}
+                <a href="{% url 'shop:register' %}" class="account-header-icon">
+                    <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+                </a>
+            {% endif %}
+
+            <a href="{% url 'shop:cart_detail' %}" class="account-header-icon">
+                <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+            </a>
+        </div>
+
+    </div>
+</header>

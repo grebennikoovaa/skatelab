@@ -253,9 +253,14 @@
     <form method="post" action="{% url 'shop:toggle_favorite' product.id %}" class="sl-favorite-form">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="sl-wishlist-btn">
-            <img src="{% static 'images/icons/heart.svg' %}" alt="Favorite">
-        </button>
+        <form method="post" action="{% url 'shop:toggle_favorite' product.id %}" class="product-favorite-form">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
+
+    <button type="submit" class="wishlist-btn {% if is_favorite %}active{% endif %}">
+        <img src="{% static 'images/icons/heart.svg' %}" alt="Favorite">
+    </button>
+</form>
     </form>
 {% else %}
     <a href="{% url 'shop:register' %}" class="sl-wishlist-btn">

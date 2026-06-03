@@ -3,47 +3,426 @@
 
 {% block content %}
 
-<section class="account-page">
-    <div class="container">
+<style>
+.orders-page-fix {
+    background: #fff;
+    color: #2d292d;
+}
 
-        <div class="account-top">
-            <div>
-                <h1>HEY,<br>{{ request.user.email|default:request.user.username|upper }}</h1>
+.orders-page-fix * {
+    box-sizing: border-box;
+}
+
+.orders-header-fix {
+    height: 88px;
+    border-bottom: 1px solid #2d292d;
+    background: #fff;
+}
+
+.orders-header-inner-fix {
+    max-width: 1180px;
+    height: 88px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+}
+
+.orders-logo-fix img {
+    width: 105px;
+    display: block;
+}
+
+.orders-nav-fix {
+    display: flex;
+    align-items: center;
+    gap: 52px;
+}
+
+.orders-nav-fix a {
+    color: #2d292d;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.orders-actions-fix {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.orders-search-fix {
+    width: 172px;
+    height: 32px;
+    border-radius: 999px;
+    background: #eee;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.orders-search-fix input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 12px;
+}
+
+.orders-search-fix button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    display: flex;
+}
+
+.orders-search-fix img,
+.orders-icon-fix img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+}
+
+.orders-main-fix {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 72px 24px 110px;
+}
+
+.orders-top-fix {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 64px;
+}
+
+.orders-top-fix h1 {
+    margin: 0;
+    max-width: 850px;
+    font-size: 42px;
+    line-height: 1.22;
+    font-weight: 900;
+    text-transform: uppercase;
+    word-break: break-word;
+}
+
+.orders-logout-fix {
+    width: 150px;
+    height: 54px;
+    border: 1px solid #2d292d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2d292d;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.orders-tabs-fix {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 54px;
+}
+
+.orders-tabs-fix a {
+    min-width: 220px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #999;
+    color: #2d292d;
+    text-align: center;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.orders-tabs-fix a.active {
+    border-bottom: 4px solid #2d292d;
+    font-weight: 700;
+}
+
+.orders-box-fix {
+    border: 1px solid #2d292d;
+    min-height: 380px;
+    padding: 56px 64px;
+}
+
+.orders-box-fix h2 {
+    margin: 0 0 64px;
+    font-size: 34px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.orders-empty-fix h3 {
+    margin: 0 0 14px;
+    font-size: 26px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.orders-empty-fix p {
+    margin: 0 0 30px;
+    color: #777;
+    font-size: 16px;
+}
+
+.orders-btn-fix {
+    width: 190px;
+    height: 52px;
+    border: 1px solid #2d292d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #2d292d;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.orders-btn-fix:hover {
+    background: #2d2527;
+    color: #fff;
+}
+
+.orders-footer-fix {
+    background: #f3f4f4;
+    border-top: 1px solid #2d292d;
+}
+
+.orders-footer-inner-fix {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 68px 24px;
+    display: grid;
+    grid-template-columns: 2fr repeat(4, 1fr);
+    gap: 58px;
+}
+
+.orders-footer-fix h3,
+.orders-footer-fix h4 {
+    margin: 0 0 18px;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.orders-footer-fix a {
+    display: block;
+    margin-bottom: 10px;
+    color: #2d292d;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.orders-footer-email-fix {
+    max-width: 280px;
+    height: 38px;
+    border-bottom: 1px solid #2d292d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.orders-footer-bottom-fix {
+    border-top: 1px solid #2d292d;
+}
+
+.orders-footer-bottom-inner-fix {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+@media (max-width: 900px) {
+    .orders-header-fix {
+        height: auto;
+    }
+
+    .orders-header-inner-fix {
+        height: auto;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .orders-nav-fix {
+        order: 3;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .orders-top-fix {
+        flex-direction: column;
+    }
+
+    .orders-top-fix h1 {
+        font-size: 34px;
+    }
+
+    .orders-tabs-fix {
+        flex-direction: column;
+    }
+
+    .orders-tabs-fix a {
+        width: 100%;
+    }
+
+    .orders-box-fix {
+        padding: 32px 20px;
+    }
+
+    .orders-footer-inner-fix {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+<div class="orders-page-fix">
+
+    <header class="orders-header-fix">
+        <div class="orders-header-inner-fix">
+
+            <a href="{% url 'shop:home' %}" class="orders-logo-fix">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <nav class="orders-nav-fix">
+                <a href="{% url 'shop:home' %}">SHOP</a>
+                <a href="{% url 'shop:categories' %}">CATEGORIES</a>
+                <a href="#">BUILD YOUR SKATE</a>
+                <a href="#">BRANDS</a>
+                <a href="#">ABOUT</a>
+            </nav>
+
+            <div class="orders-actions-fix">
+                <form class="orders-search-fix" action="#" method="get">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit">
+                        <img src="{% static 'images/icons/search.svg' %}" alt="Search">
+                    </button>
+                </form>
+
+                <a href="{% url 'shop:profile' %}" class="orders-icon-fix">
+                    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                </a>
+
+                <a href="{% url 'shop:favorites' %}" class="orders-icon-fix">
+                    <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+                </a>
+
+                <a href="{% url 'shop:cart_detail' %}" class="orders-icon-fix">
+                    <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                </a>
             </div>
 
-            <a href="{% url 'shop:logout' %}" class="account-logout">
+        </div>
+    </header>
+
+    <main class="orders-main-fix">
+
+        <div class="orders-top-fix">
+           <h1>
+    HEY, 
+    {% if request.user.first_name %}
+        {{ request.user.first_name|upper }}
+    {% else %}
+        {{ request.user.username|cut:"@outlook.com"|cut:"@gmail.com"|upper }}
+    {% endif %}
+</h1>
+
+            <a href="{% url 'shop:logout' %}" class="orders-logout-fix">
                 LOG OUT
             </a>
         </div>
 
-        <div class="account-tabs">
-            <a href="{% url 'shop:profile' %}" class="account-tab">
-                User Data
-            </a>
-
-            <a href="{% url 'shop:orders' %}" class="account-tab active">
-                Order History
-            </a>
-
-            <a href="{% url 'shop:favorites' %}" class="account-tab">
-                Favorite Items
-            </a>
+        <div class="orders-tabs-fix">
+            <a href="{% url 'shop:profile' %}">User Data</a>
+            <a href="{% url 'shop:orders' %}" class="active">Order History</a>
+            <a href="{% url 'shop:favorites' %}">Favorite Items</a>
         </div>
 
-        <div class="account-box">
+        <section class="orders-box-fix">
             <h2>Order History</h2>
 
-            <div class="orders-empty">
+            <div class="orders-empty-fix">
                 <h3>You don’t have any orders yet</h3>
                 <p>When you place an order, it will appear here.</p>
 
-                <a href="{% url 'shop:complete_skateboards' %}" class="account-btn">
+                <a href="{% url 'shop:complete_skateboards' %}" class="orders-btn-fix">
                     START SHOPPING
                 </a>
             </div>
+        </section>
+
+    </main>
+
+    <footer class="orders-footer-fix">
+        <div class="orders-footer-inner-fix">
+
+            <div>
+                <h3>Skate service subscription 10%</h3>
+                <div class="orders-footer-email-fix">
+                    <span>Email</span>
+                    <span>→</span>
+                </div>
+            </div>
+
+            <div>
+                <h4>SHOP</h4>
+                <a href="{% url 'shop:complete_skateboards' %}">Complete Skateboards</a>
+                <a href="#">Decks</a>
+                <a href="#">Wheels</a>
+                <a href="#">Trucks</a>
+                <a href="#">Accessories</a>
+            </div>
+
+            <div>
+                <h4>SUPPORT</h4>
+                <a href="#">Payment</a>
+                <a href="#">Delivery</a>
+                <a href="#">Returns & Exchanges</a>
+                <a href="#">FAQ</a>
+            </div>
+
+            <div>
+                <h4>COMPANY</h4>
+                <a href="#">About Us</a>
+                <a href="#">Our Story</a>
+                <a href="#">Contacts</a>
+                <a href="#">Blog</a>
+            </div>
+
+            <div>
+                <h4>FOLLOW US</h4>
+                <a href="#">Instagram</a>
+                <a href="#">TikTok</a>
+                <a href="#">YouTube</a>
+                <a href="#">Facebook</a>
+            </div>
+
         </div>
 
-    </div>
-</section>
+        <div class="orders-footer-bottom-fix">
+            <div class="orders-footer-bottom-inner-fix">
+                <span>© 2026 SkateLab. All rights reserved</span>
+                <span>Privacy Policy | Terms of Service</span>
+            </div>
+        </div>
+    </footer>
+
+</div>
 
 {% endblock %}

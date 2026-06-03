@@ -31,4 +31,5 @@ path('favorites/toggle/<int:product_id>/', views.toggle_favorite, name='toggle_f
 
     path('404-preview/', views.custom_404_preview, name='404_preview'),
     path('orders/', views.orders_page, name='orders'),
+
 ]

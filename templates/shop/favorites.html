@@ -3,106 +3,374 @@
 
 {% block content %}
 
+<style>
+.favorites-page {
+    background: #ffffff;
+    color: #2d292d;
+    min-height: 760px;
+    padding: 78px 0 120px;
+}
+
+.favorites-page * {
+    box-sizing: border-box;
+}
+
+.favorites-container {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.favorites-title {
+    margin: 0 0 64px;
+    color: #2d292d;
+    font-size: 48px;
+    line-height: 1.12;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+.account-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 780px;
+    margin-bottom: 58px;
+}
+
+.account-tabs a {
+    padding: 0 20px 14px;
+    border-bottom: 1px solid #999999;
+    color: #2d292d;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 400;
+}
+
+.account-tabs a.active {
+    border-bottom: 4px solid #2d292d;
+    font-weight: 800;
+}
+
+.favorites-table-head {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 0.65fr 0.5fr 0.85fr;
+    gap: 24px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #9a9a9a;
+    color: #2d292d;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.favorite-row {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 0.65fr 0.5fr 0.85fr;
+    gap: 24px;
+    align-items: center;
+    padding: 34px 0;
+    border-bottom: 1px solid #b7b7b7;
+}
+
+.favorite-product {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    min-width: 0;
+}
+
+.favorite-product-image {
+    width: 132px;
+    min-width: 132px;
+    height: 132px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-product-image img {
+    max-width: 132px;
+    max-height: 132px;
+    object-fit: contain;
+    display: block;
+}
+
+.favorite-product-info h3 {
+    margin: 0 0 10px;
+    color: #2d292d;
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.favorite-product-info p {
+    margin: 0 0 30px;
+    color: #2d292d;
+    font-size: 13px;
+    line-height: 1.3;
+    font-weight: 400;
+}
+
+.favorite-remove-form {
+    margin: 0;
+}
+
+.favorite-remove-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #2d292d;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 400;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.favorite-price,
+.favorite-total {
+    color: #2d292d;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.favorite-quantity {
+    width: 116px;
+    height: 34px;
+    border: 1px solid #2d292d;
+    display: grid;
+    grid-template-columns: 34px 46px 34px;
+}
+
+.favorite-quantity button,
+.favorite-quantity span {
+    border: 0;
+    background: transparent;
+    color: #2d292d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.favorite-quantity span {
+    border-left: 1px solid #2d292d;
+    border-right: 1px solid #2d292d;
+}
+
+.favorite-cart-form {
+    margin: 0;
+}
+
+.favorite-add-cart-btn {
+    width: 100%;
+    min-width: 160px;
+    height: 54px;
+    border: 1px solid #2d292d;
+    background: transparent;
+    color: #2d292d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.favorite-add-cart-btn:hover {
+    background: #2d2527;
+    color: #ffffff;
+}
+
+.favorites-empty {
+    padding: 92px 20px 120px;
+    text-align: center;
+}
+
+.favorites-empty h3 {
+    margin: 0 0 14px;
+    color: #2d292d;
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 900;
+}
+
+.favorites-empty p {
+    margin: 0 0 30px;
+    color: #555555;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.favorites-empty a {
+    width: 180px;
+    height: 54px;
+    border: 1px solid #2d292d;
+    color: #2d292d;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 900;
+    transition: 0.25s ease;
+}
+
+.favorites-empty a:hover {
+    background: #2d2527;
+    color: #ffffff;
+}
+
+@media (max-width: 900px) {
+    .favorites-page {
+        padding: 48px 0 80px;
+    }
+
+    .favorites-title {
+        font-size: 34px;
+        margin-bottom: 42px;
+    }
+
+    .account-tabs {
+        grid-template-columns: 1fr;
+        max-width: none;
+        margin-bottom: 40px;
+    }
+
+    .favorites-table-head {
+        display: none;
+    }
+
+    .favorite-row {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        align-items: start;
+    }
+
+    .favorite-product {
+        gap: 20px;
+    }
+
+    .favorite-add-cart-btn {
+        max-width: 260px;
+    }
+}
+</style>
+
 <section class="favorites-page">
-    <div class="container">
+    <div class="favorites-container">
 
-        <div class="favorites-header">
-            <h1>HEY, {{ request.user.first_name|default:request.user.username|upper }}</h1>
+        <h1 class="favorites-title">
+            HEY, {{ display_name|upper }}
+        </h1>
 
-            <div class="account-tabs">
-    <a href="{% url 'shop:profile' %}" class="account-tab">
-        User Data
-    </a>
-
-    <a href="{% url 'shop:orders' %}" class="account-tab">
-        Order History
-    </a>
-
-    <a href="{% url 'shop:favorites' %}" class="account-tab active">
-        Favorite Items ({{ favorites|length }})
-    </a>
-</div>
+        <div class="account-tabs">
+            <a href="{% url 'shop:profile' %}">User Data</a>
+            <a href="{% url 'shop:orders' %}">Order History</a>
+            <a href="{% url 'shop:favorites' %}" class="active">
+                Favorite Items ({{ favorites|length }})
+            </a>
         </div>
 
-        <div class="favorites-table">
+        <div class="favorites-table-head">
+            <div>Product</div>
+            <div>Price</div>
+            <div>Quantity</div>
+            <div>Total</div>
+            <div></div>
+        </div>
 
-            <div class="favorites-table-head">
-                <div>Product</div>
-                <div>Price</div>
-                <div>Quantity</div>
-                <div>Total</div>
-                <div></div>
-            </div>
+        {% if favorites %}
+            {% for favorite in favorites %}
+                <div class="favorite-row">
 
-            {% if favorites %}
-                {% for favorite in favorites %}
-                    <div class="favorites-row">
+                    <div class="favorite-product">
+                        <a href="{% url 'shop:product_detail' favorite.product.slug %}" class="favorite-product-image">
+                            {% if favorite.product.image %}
+                                <img src="{{ favorite.product.image.url }}" alt="{{ favorite.product.name }}">
+                            {% elif favorite.product.main_image %}
+                                <img src="{{ favorite.product.main_image.url }}" alt="{{ favorite.product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/products/product1.png' %}" alt="{{ favorite.product.name }}">
+                            {% endif %}
+                        </a>
 
-                        <div class="fav-product-cell">
-                            <a href="{{ favorite.product.get_absolute_url }}" class="fav-product-image">
-                                {% if favorite.product.image %}
-                                    <img src="{{ favorite.product.image.url }}" alt="{{ favorite.product.name }}">
-                                {% else %}
-                                    <img src="{% static 'images/products/product1.png' %}" alt="{{ favorite.product.name }}">
+                        <div class="favorite-product-info">
+                            <h3>
+                                {% if favorite.product.brand %}
+                                    {{ favorite.product.brand|upper }} -
                                 {% endif %}
-                            </a>
+                                {{ favorite.product.name|upper }}
+                            </h3>
 
-                            <div class="fav-product-info">
-                                <h3>{{ favorite.product.brand|upper }} - {{ favorite.product.name|upper }}</h3>
-
+                            <p>
                                 {% if favorite.product.width %}
-                                    <p>{{ favorite.product.width }} Street Skateboard</p>
+                                    Width {{ favorite.product.width }}
                                 {% else %}
-                                    <p>Street Skateboard</p>
+                                    Width 7.0”
                                 {% endif %}
+                            </p>
 
-                                <form method="post" action="{% url 'shop:toggle_favorite' favorite.product.id %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <button type="submit" class="remove-favorite-btn">
-                                        Remove from favorites
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="fav-price-cell">
-                            ${{ favorite.product.price|floatformat:0 }}
-                        </div>
-
-                        <div class="fav-qty-cell">
-                            <div class="fav-qty-box">
-                                <button type="button">-</button>
-                                <span>1</span>
-                                <button type="button">+</button>
-                            </div>
-                        </div>
-
-                        <div class="fav-total-cell">
-                            ${{ favorite.product.price|floatformat:0 }}
-                        </div>
-
-                        <div class="fav-action-cell">
-                            <form method="post" action="{% url 'shop:cart_add' favorite.product.id %}">
+                            <form method="post"
+                                  action="{% url 'shop:toggle_favorite' favorite.product.id %}"
+                                  class="favorite-remove-form">
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ request.path }}">
-                                <button type="submit" class="fav-add-cart-btn">
-                                    ADD TO CART
+                                <button type="submit" class="favorite-remove-btn">
+                                    Remove from favorites
                                 </button>
                             </form>
                         </div>
-
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="favorites-empty">
-                    <h3>Your favorites list is empty</h3>
-                    <p>Add products by clicking the heart icon.</p>
-                    <a href="{% url 'shop:complete_skateboards' %}">GO TO SHOP</a>
-                </div>
-            {% endif %}
 
-        </div>
+                    <div class="favorite-price">
+                        ${{ favorite.product.price|floatformat:0 }}
+                    </div>
+
+                    <div>
+                        <div class="favorite-quantity">
+                            <button type="button">-</button>
+                            <span>1</span>
+                            <button type="button">+</button>
+                        </div>
+                    </div>
+
+                    <div class="favorite-total">
+                        ${{ favorite.product.price|floatformat:0 }}
+                    </div>
+
+                    <form method="post"
+                          action="{% url 'shop:cart_add' favorite.product.id %}"
+                          class="favorite-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="favorite-add-cart-btn">
+                            ADD TO CART
+                        </button>
+                    </form>
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="favorites-empty">
+                <h3>Your favorites list is empty</h3>
+                <p>Add products by clicking the heart icon.</p>
+                <a href="{% url 'shop:complete_skateboards' %}">GO TO SHOP</a>
+            </div>
+        {% endif %}
 
     </div>
 </section>

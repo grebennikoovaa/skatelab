@@ -209,9 +209,12 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="payment-confirm-btn">
-                        CONFIRM PAYMENT
-                    </button>
+                   <form method="post" action="{% url 'shop:payment' %}">
+    {% csrf_token %}
+    <button type="submit" class="payment-submit-btn">
+        CONFIRM PAYMENT
+    </button>
+</form>
                 </form>
             </div>
 
