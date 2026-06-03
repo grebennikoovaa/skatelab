@@ -1,0 +1,192 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logo.svg' %}" alt="SkateLab">
+            </a>
+
+            <div class="collapse navbar-collapse show">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+
+                        <a href="{% url 'shop:cart_detail' %}">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="cart-page-final">
+    <div class="container">
+
+        <div class="cart-breadcrumbs">
+            <a href="{% url 'shop:home' %}">Home</a>
+            <span>&lt;</span>
+            <span>Cart</span>
+        </div>
+
+        <h1 class="cart-title-final">YOUR CART ({{ total_quantity }})</h1>
+
+        {% if cart_items %}
+            <div class="cart-content-final">
+
+                <div class="cart-main-final">
+                    <div class="cart-table-head">
+                        <span>Product</span>
+                        <span>Price</span>
+                        <span>Quantity</span>
+                        <span>Total</span>
+                    </div>
+
+                    {% for item in cart_items %}
+                        <article class="cart-product-row">
+                            <div class="cart-product-info">
+                                <a href="{{ item.product.get_absolute_url }}" class="cart-product-image">
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                </a>
+
+                                <div class="cart-product-text">
+                                    <h2>{{ item.product.brand }} – {{ item.product.name }}</h2>
+                                    <p>{{ item.product.description }}</p>
+
+                                    <div class="cart-product-links">
+                                        <a href="{% url 'shop:cart_remove' item.product.id %}">Remove</a>
+                                        <a href="#">Save for later</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cart-product-price">
+                                {{ item.product.price_display }}
+                            </div>
+
+                            <form method="post" action="{% url 'shop:cart_update' item.product.id %}" class="cart-qty-final">
+                                {% csrf_token %}
+                                <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}">-</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                                <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}">+</button>
+                            </form>
+
+                            <div class="cart-product-total">
+                                ${{ item.item_total }}
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                    <div class="cart-bottom-actions">
+                        <a href="{% url 'shop:complete_skateboards' %}" class="cart-continue-btn">
+                            <span>←</span>
+                            Continue shopping
+                        </a>
+
+                        <a href="{% url 'shop:cart_detail' %}" class="cart-update-btn">
+                            Update cart
+                        </a>
+                    </div>
+                </div>
+
+                <aside class="cart-summary-final">
+                    <h2>Order summary</h2>
+
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <strong>${{ total_price }}.00</strong>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Shipping</span>
+                        <strong>${{ shipping }}</strong>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Estimated tax</span>
+                        <strong>${{ tax }}.00</strong>
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-total-final">
+                        <span>Total</span>
+                        <strong>${{ final_total }}</strong>
+                    </div>
+
+                   <a href="{% url 'shop:checkout' %}" class="checkout-final-btn">
+    Proceed to checkout
+</a>
+
+                    <div class="payment-icons">
+                        <span>VISA</span>
+                        <span>●●</span>
+                        <span>PayPal</span>
+                        <span>Pay</span>
+                        <span>G Pay</span>
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <ul class="cart-benefits">
+                        <li>Free shipping on orders over $99</li>
+                        <li>Secure checkout</li>
+                    </ul>
+                </aside>
+            </div>
+        {% else %}
+            <div class="empty-cart">
+                <h2>YOUR CART IS EMPTY</h2>
+                <p>Add some skate goods and come back here.</p>
+
+                <a href="{% url 'shop:complete_skateboards' %}">
+                    START SHOPPING
+                    <span>→</span>
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

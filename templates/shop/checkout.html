@@ -1,0 +1,209 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <div class="collapse navbar-collapse show">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+
+                        <a href="{% url 'shop:cart_detail' %}">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="checkout-page">
+    <div class="container">
+
+        <div class="checkout-breadcrumbs">
+            <a href="{% url 'shop:cart_detail' %}">Cart</a>
+            <span>›</span>
+            <span>Checkout</span>
+        </div>
+
+        <h1 class="checkout-title">CHECKOUT</h1>
+
+        <div class="checkout-layout">
+
+            <div class="checkout-form-card">
+                <div class="checkout-steps">
+                    <div class="checkout-step active">
+                        <span>1</span>
+                        <strong>INFORMATION</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>2</span>
+                        <strong>Shipping</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>3</span>
+                        <strong>Payment</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>4</span>
+                        <strong>Review</strong>
+                    </div>
+                </div>
+
+                <form method="post" class="checkout-form">
+                    {% csrf_token %}
+
+                    <h2>Contact information</h2>
+
+                    <label>
+                        <span>Full name</span>
+                        <input
+                            type="text"
+                            name="full_name"
+                            placeholder="Enter full name"
+                            value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        <span>Email</span>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Enter email"
+                            value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        <span>Phone</span>
+                        <input
+                            type="tel"
+                            name="phone"
+                            placeholder="Enter phone number"
+                            required
+                        >
+                    </label>
+
+                    <label class="checkout-checkbox">
+                        <input type="checkbox" name="create_account" checked>
+                        <span>Create an account for faster checkout next time</span>
+                    </label>
+
+                    <button type="submit" class="checkout-continue-btn">
+                        Continue to shipping
+                    </button>
+                </form>
+            </div>
+
+            <aside class="checkout-summary-card">
+                <h2>Order summary</h2>
+
+                <div class="checkout-summary-products">
+                    {% for item in cart_items %}
+                        <div class="checkout-summary-product">
+                            <div class="checkout-summary-image">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            </div>
+
+                            <div class="checkout-summary-text">
+                                <h3>{{ item.product.brand }} – {{ item.product.name }}</h3>
+                                <p>Width 7.0”</p>
+                            </div>
+
+                            <strong>${{ item.item_total }}</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="checkout-summary-divider"></div>
+
+                <div class="checkout-summary-line">
+                    <span>Subtotal</span>
+                    <strong>${{ total_price }}</strong>
+                </div>
+
+                <div class="checkout-summary-line">
+                    <span>Shipping</span>
+                    <strong>$ {{ shipping }}</strong>
+                </div>
+
+                <div class="checkout-summary-line">
+                    <span>Estimated tax</span>
+                    <strong>${{ tax }}.00</strong>
+                </div>
+
+                <div class="checkout-summary-divider"></div>
+
+                <div class="checkout-summary-total">
+                    <span>Total</span>
+                    <strong>${{ final_total }}</strong>
+                </div>
+
+                <div class="checkout-summary-divider"></div>
+
+                <ul class="checkout-benefits">
+                    <li>Free shipping on orders over $99</li>
+                    <li>Secure checkout</li>
+                </ul>
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

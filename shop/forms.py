@@ -42,10 +42,27 @@ class CustomerRegisterForm(UserCreationForm):
             'accept_terms',
         ]
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if email:
+            email = email.lower().strip()
+
+            if User.objects.filter(username=email).exists():
+                raise forms.ValidationError('An account with this email already exists.')
+
+            if User.objects.filter(email=email).exists():
+                raise forms.ValidationError('An account with this email already exists.')
+
+        return email
+
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.username = self.cleaned_data['email']
-        user.email = self.cleaned_data['email']
+
+        email = self.cleaned_data['email'].lower().strip()
+
+        user.username = email
+        user.email = email
 
         if commit:
             user.save()

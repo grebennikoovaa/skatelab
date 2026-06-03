@@ -1,0 +1,235 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <div class="collapse navbar-collapse show">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+
+                        <a href="{% url 'shop:cart_detail' %}">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="shipping-page">
+    <div class="container">
+
+        <div class="shipping-breadcrumbs">
+            <a href="{% url 'shop:checkout' %}">Checkout</a>
+            <span>›</span>
+            <span>Shipping</span>
+        </div>
+
+        <h1 class="shipping-title">SHIPPING</h1>
+
+        <div class="shipping-layout">
+
+            <div class="shipping-form-card">
+                <div class="checkout-steps shipping-steps">
+                    <div class="checkout-step">
+                        <span>1</span>
+                        <strong>Information</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step active">
+                        <span>2</span>
+                        <strong>SHIPPING</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>3</span>
+                        <strong>Payment</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>4</span>
+                        <strong>Review</strong>
+                    </div>
+                </div>
+
+                <form method="post" class="shipping-form">
+                    {% csrf_token %}
+
+                    <h2>Shipping address</h2>
+
+                    <label class="shipping-full">
+                        <span>Full name</span>
+                        <input type="text" name="full_name" placeholder="Enter full name" required>
+                    </label>
+
+                    <div class="shipping-two-cols">
+                        <label>
+                            <span>Country</span>
+                            <select name="country" required>
+                                <option value="Poland">Poland ×</option>
+                                <option value="Ukraine">Ukraine</option>
+                                <option value="Germany">Germany</option>
+                                <option value="USA">USA</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            <span>Region</span>
+                            <select name="region" required>
+                                <option value="">Region</option>
+                                <option value="Mazowieckie">Mazowieckie</option>
+                                <option value="Malopolskie">Malopolskie</option>
+                                <option value="Dolnoslaskie">Dolnoslaskie</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="shipping-three-cols">
+                        <label>
+                            <span>Street</span>
+                            <input type="text" name="street" placeholder="Street" required>
+                        </label>
+
+                        <label>
+                            <span>Building</span>
+                            <input type="text" name="building" placeholder="Street" required>
+                        </label>
+
+                        <label>
+                            <span>Apartment</span>
+                            <input type="text" name="apartment" placeholder="Apartment">
+                        </label>
+                    </div>
+
+                    <div class="shipping-two-cols">
+                        <label>
+                            <span>City</span>
+                            <input type="text" name="city" placeholder="City" required>
+                        </label>
+
+                        <label>
+                            <span>Zip code</span>
+                            <input type="text" name="zip_code" placeholder="Zip code" required>
+                        </label>
+                    </div>
+
+                    <label class="shipping-checkbox">
+                        <input type="checkbox" name="payer_same" checked>
+                        <span>Payer detail are the same as for shipping</span>
+                    </label>
+
+                    <input type="hidden" name="shipping_method" id="selectedShippingMethod" value="inpost">
+
+                    <button type="submit" class="shipping-continue-btn">
+                        Continue to Payment
+                    </button>
+                </form>
+            </div>
+
+            <aside class="shipping-method-card">
+                <h2>Shipping method</h2>
+
+                <div class="shipping-method-divider"></div>
+
+                <label class="shipping-method-option">
+                    <input type="radio" name="method_choice" value="dpd">
+                    <span class="fake-radio"></span>
+
+                    <div class="shipping-method-logo dpd-logo">◆ dpd</div>
+
+                    <p>The parcel will be delivered by DPD</p>
+                </label>
+
+                <label class="shipping-method-option">
+                    <input type="radio" name="method_choice" value="inpost" checked>
+                    <span class="fake-radio"></span>
+
+                    <div class="shipping-method-logo inpost-logo">☀ InPost</div>
+
+                    <p>InPost Parcel Locker 24/7 FREE</p>
+                </label>
+
+                <label class="shipping-method-option">
+                    <input type="radio" name="method_choice" value="pickup">
+                    <span class="fake-radio"></span>
+
+                    <div class="shipping-method-logo pickup-logo">▤</div>
+
+                    <p>Order and pick up at your chosen store</p>
+                </label>
+
+                <label class="shipping-method-option">
+                    <input type="radio" name="method_choice" value="dpd_pickup">
+                    <span class="fake-radio"></span>
+
+                    <div class="shipping-method-logo dpd-logo">◆ dpd</div>
+
+                    <p>DPD Pickup collection point/parcel machine be delivered by DPD</p>
+                </label>
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    const selectedShippingMethod = document.getElementById("selectedShippingMethod");
+
+    document.querySelectorAll("input[name='method_choice']").forEach(function (radio) {
+        radio.addEventListener("change", function () {
+            selectedShippingMethod.value = radio.value;
+        });
+    });
+</script>
+
+{% endblock %}

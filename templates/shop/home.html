@@ -59,7 +59,7 @@
                                 </svg>
                             </a>
 
-                            <a href="#" class="header-icon" aria-label="Cart">
+                            <a href="{% url 'shop:cart_detail' %}" class="header-icon" aria-label="Cart">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                                     <path d="M3 3H5.2L7 15.2C7.1 16.2 8 17 9 17H18.5C19.4 17 20.2 16.4 20.5 15.5L22 8H6"
                                           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -110,7 +110,9 @@
     <div class="container">
         <div class="section-header">
             <h2>LATEST DROPS</h2>
-            <a href="#" class="discover-btn">DISCOVER MORE</a>
+            <a href="{% url 'shop:categories' %}" class="discover-btn">
+    DISCOVER MORE
+</a>
         </div>
 
         <div class="products-grid">
@@ -124,7 +126,11 @@
                     <h3>{{ product.brand }} {{ product.name }}</h3>
 <p>{{ product.description }}</p>
 <strong>{{ product.price_display }}</strong>
-                    <button>ADD TO CART</button>
+                    <form method="post" action="{% url 'shop:cart_add' product.id %}" class="add-to-cart-form">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <button type="submit">ADD TO CART</button>
+</form>
                 </div>
             </div>
             {% endfor %}

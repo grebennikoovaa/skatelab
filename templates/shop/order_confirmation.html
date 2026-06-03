@@ -1,0 +1,139 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="order-confirmation-page">
+    <div class="container">
+
+        <div class="order-confirmation-heading">
+            <h1>ORDER CONFIRMATION</h1>
+            <p>Thank you for your order!</p>
+        </div>
+
+        <div class="order-steps">
+            <div class="order-step active">
+                <span>1</span>
+                <strong>INFORMATION</strong>
+            </div>
+
+            <div class="order-step-line"></div>
+
+            <div class="order-step active">
+                <span>2</span>
+                <strong>SHIPPING</strong>
+            </div>
+
+            <div class="order-step-line"></div>
+
+            <div class="order-step active">
+                <span>3</span>
+                <strong>PAYMENT</strong>
+            </div>
+
+            <div class="order-step-line"></div>
+
+            <div class="order-step">
+                <span>4</span>
+                <strong>REVIEW</strong>
+            </div>
+        </div>
+
+        <div class="order-info-grid">
+            <div class="order-info-item">
+                <span>Delivery Date</span>
+                <strong>{{ order.delivery_date }}</strong>
+            </div>
+
+            <div class="order-info-item">
+                <span>Order ID</span>
+                <strong>{{ order.order_id }}</strong>
+            </div>
+
+            <div class="order-info-item">
+                <span>Payment Method</span>
+                <strong>
+                    {% if order.payment_method == 'apple_pay' %}
+                        Pay
+                    {% elif order.payment_method == 'google_pay' %}
+                        G Pay
+                    {% elif order.payment_method == 'paypal' %}
+                        PayPal
+                    {% else %}
+                        Mastercard
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="order-info-item">
+                <span>Address</span>
+                <strong>{{ order.address|default:"6391 Elgin St...." }}</strong>
+            </div>
+        </div>
+
+        <div class="order-table">
+            <div class="order-table-head">
+                <span>Product</span>
+                <span>Price</span>
+                <span>Quantity</span>
+                <span>Total</span>
+            </div>
+
+            {% for item in order.items %}
+                <article class="order-product-row">
+                    <div class="order-product-info">
+                        <div class="order-product-image">
+                            {% if item.image_url %}
+                                <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                            {% endif %}
+                        </div>
+
+                        <div class="order-product-text">
+                            <h2>{{ item.brand }} – {{ item.name }}</h2>
+                            <p>Width 7.0”</p>
+                        </div>
+                    </div>
+
+                    <div class="order-product-price">
+                        ${{ item.price|floatformat:0 }}
+                    </div>
+
+                    <div class="order-product-qty">
+                        <span>-</span>
+                        <strong>{{ item.quantity }}</strong>
+                        <span>+</span>
+                    </div>
+
+                    <div class="order-product-total">
+                        ${{ item.item_total|floatformat:0 }}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <div class="order-total-box">
+            <div class="order-total-row muted">
+                <span>Subtotal ({{ order.total_quantity }} items)</span>
+                <strong>${{ order.subtotal|floatformat:0 }}</strong>
+            </div>
+
+            <div class="order-total-row">
+                <span>TOTAL AMOUNT</span>
+                <strong>${{ order.final_total|floatformat:2 }}</strong>
+            </div>
+        </div>
+
+        <div class="order-actions">
+            <a href="#" class="order-track-btn">
+                Track your order
+            </a>
+
+            <a href="{% url 'shop:home' %}" class="order-home-btn">
+                Return to the main page
+            </a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

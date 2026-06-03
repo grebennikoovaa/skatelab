@@ -42,13 +42,13 @@
                     </form>
 
                     <div class="category-header-icons">
-                        <a href="{% url 'shop:profile' %}">
-    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
-</a>
                         <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
-    <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
-</a>
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
                         <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+                        <a href="{% url 'shop:cart_detail' %}">
                             <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
                         </a>
                     </div>

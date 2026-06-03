@@ -1,0 +1,216 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<header class="catalog-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container catalog-header-container">
+            <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+            <div class="collapse navbar-collapse show">
+                <ul class="navbar-nav mx-auto catalog-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:home' %}">SHOP</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shop:categories' %}">CATEGORIES</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BUILD YOUR SKATE</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">BRANDS</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                </ul>
+
+                <div class="catalog-header-right">
+                    <form class="catalog-search-form" action="#" method="get">
+                        <input type="search" placeholder="Search..." aria-label="Search">
+                        <button type="submit" aria-label="Search">
+                            <img src="{% static 'images/icons/search.svg' %}" alt="">
+                        </button>
+                    </form>
+
+                    <div class="catalog-header-icons">
+                        <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
+                            <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+                        </a>
+
+                        <a href="#">
+                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                        </a>
+
+                        <a href="{% url 'shop:cart_detail' %}">
+                            <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="payment-page">
+    <div class="container">
+
+        <div class="payment-breadcrumbs">
+            <a href="{% url 'shop:shipping' %}">Shipping</a>
+            <span>›</span>
+            <span>Payment</span>
+        </div>
+
+        <h1 class="payment-title">PAYMENT</h1>
+
+        <div class="payment-layout">
+
+            <div class="payment-form-card">
+                <div class="checkout-steps payment-steps">
+                    <div class="checkout-step">
+                        <span>1</span>
+                        <strong>Information</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>2</span>
+                        <strong>Shipping</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step active">
+                        <span>3</span>
+                        <strong>PAYMENT</strong>
+                    </div>
+
+                    <div class="checkout-step-line"></div>
+
+                    <div class="checkout-step">
+                        <span>4</span>
+                        <strong>Review</strong>
+                    </div>
+                </div>
+
+                <form method="post" class="payment-form">
+                    {% csrf_token %}
+
+                    <h2>Choose payment method</h2>
+
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="mastercard">
+                            <span class="payment-check"></span>
+                            <span class="payment-logo mastercard-logo">
+                                <span></span><span></span>
+                            </span>
+                        </label>
+
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="apple_pay" checked>
+                            <span class="payment-check"></span>
+                            <span class="payment-logo apple-logo"> Pay</span>
+                        </label>
+
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="google_pay">
+                            <span class="payment-check"></span>
+                            <span class="payment-logo google-logo">G Pay</span>
+                        </label>
+
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="paypal">
+                            <span class="payment-check"></span>
+                            <span class="payment-logo paypal-logo">PayPal</span>
+                        </label>
+                    </div>
+
+                    <div class="payment-two-cols">
+                        <label>
+                            <span>Card number *</span>
+                            <input type="text" name="card_number" inputmode="numeric">
+                        </label>
+
+                        <label>
+                            <span>Cardholder *</span>
+                            <input type="text" name="cardholder">
+                        </label>
+                    </div>
+
+                    <div class="payment-expiry-row">
+                        <label>
+                            <span>Expiry date *</span>
+                            <select name="expiry_month">
+                                <option value="">Month</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </label>
+
+                        <label class="payment-year-label">
+                            <span>&nbsp;</span>
+                            <select name="expiry_year">
+                                <option value="">Year</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                                <option value="2031">2031</option>
+                            </select>
+                        </label>
+
+                        <label class="payment-cvc-label">
+                            <span>CVC</span>
+                            <input type="text" name="cvc" inputmode="numeric" maxlength="4">
+                        </label>
+                    </div>
+
+                    <label class="payment-checkbox">
+                        <input type="checkbox" name="save_details" checked>
+                        <span>Save my details for future purchases</span>
+                    </label>
+
+                    <div class="payment-total-box">
+                        <div class="payment-total-row muted">
+                            <span>Subtotal ({{ total_quantity }} items)</span>
+                            <strong>${{ total_price }}</strong>
+                        </div>
+
+                        <div class="payment-total-row">
+                            <span>TOTAL AMOUNT</span>
+                            <strong>${{ final_total }}</strong>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="payment-confirm-btn">
+                        CONFIRM PAYMENT
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
