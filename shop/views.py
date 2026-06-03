@@ -7,6 +7,8 @@ from django.utils import timezone
 
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from .models import Category, Product
+from .models import Product, ProductGalleryImage, ProductSpecification, Favorite
+
 
 def home(request):
     products = Product.objects.filter(is_active=True)[:8]
@@ -474,3 +476,32 @@ def order_confirmation(request):
     return render(request, 'shop/order_confirmation.html', {
         'order': order,
     })
+
+@login_required
+def favorites_page(request):
+    favorites = Favorite.objects.filter(user=request.user).select_related('product')
+
+    return render(request, 'shop/favorites.html', {
+        'favorites': favorites,
+    })
+
+
+@login_required
+def toggle_favorite(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+
+    if not created:
+        favorite.delete()
+
+    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or '/'
+
+    return redirect(next_url)
+
+@login_required
+def orders_page(request):
+    return render(request, 'shop/orders.html')

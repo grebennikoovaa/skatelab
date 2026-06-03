@@ -26,5 +26,9 @@ path('shipping/', views.shipping, name='shipping'),
 path('payment/', views.payment, name='payment'),
 path('order-confirmation/', views.order_confirmation, name='order_confirmation'),
 
+path('favorites/', views.favorites_page, name='favorites'),
+path('favorites/toggle/<int:product_id>/', views.toggle_favorite, name='toggle_favorite'),
+
     path('404-preview/', views.custom_404_preview, name='404_preview'),
+    path('orders/', views.orders_page, name='orders'),
 ]

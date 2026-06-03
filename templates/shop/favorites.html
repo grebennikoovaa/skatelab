@@ -1,0 +1,110 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="favorites-page">
+    <div class="container">
+
+        <div class="favorites-header">
+            <h1>HEY, {{ request.user.first_name|default:request.user.username|upper }}</h1>
+
+            <div class="account-tabs">
+    <a href="{% url 'shop:profile' %}" class="account-tab">
+        User Data
+    </a>
+
+    <a href="{% url 'shop:orders' %}" class="account-tab">
+        Order History
+    </a>
+
+    <a href="{% url 'shop:favorites' %}" class="account-tab active">
+        Favorite Items ({{ favorites|length }})
+    </a>
+</div>
+        </div>
+
+        <div class="favorites-table">
+
+            <div class="favorites-table-head">
+                <div>Product</div>
+                <div>Price</div>
+                <div>Quantity</div>
+                <div>Total</div>
+                <div></div>
+            </div>
+
+            {% if favorites %}
+                {% for favorite in favorites %}
+                    <div class="favorites-row">
+
+                        <div class="fav-product-cell">
+                            <a href="{{ favorite.product.get_absolute_url }}" class="fav-product-image">
+                                {% if favorite.product.image %}
+                                    <img src="{{ favorite.product.image.url }}" alt="{{ favorite.product.name }}">
+                                {% else %}
+                                    <img src="{% static 'images/products/product1.png' %}" alt="{{ favorite.product.name }}">
+                                {% endif %}
+                            </a>
+
+                            <div class="fav-product-info">
+                                <h3>{{ favorite.product.brand|upper }} - {{ favorite.product.name|upper }}</h3>
+
+                                {% if favorite.product.width %}
+                                    <p>{{ favorite.product.width }} Street Skateboard</p>
+                                {% else %}
+                                    <p>Street Skateboard</p>
+                                {% endif %}
+
+                                <form method="post" action="{% url 'shop:toggle_favorite' favorite.product.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <button type="submit" class="remove-favorite-btn">
+                                        Remove from favorites
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="fav-price-cell">
+                            ${{ favorite.product.price|floatformat:0 }}
+                        </div>
+
+                        <div class="fav-qty-cell">
+                            <div class="fav-qty-box">
+                                <button type="button">-</button>
+                                <span>1</span>
+                                <button type="button">+</button>
+                            </div>
+                        </div>
+
+                        <div class="fav-total-cell">
+                            ${{ favorite.product.price|floatformat:0 }}
+                        </div>
+
+                        <div class="fav-action-cell">
+                            <form method="post" action="{% url 'shop:cart_add' favorite.product.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <button type="submit" class="fav-add-cart-btn">
+                                    ADD TO CART
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="favorites-empty">
+                    <h3>Your favorites list is empty</h3>
+                    <p>Add products by clicking the heart icon.</p>
+                    <a href="{% url 'shop:complete_skateboards' %}">GO TO SHOP</a>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

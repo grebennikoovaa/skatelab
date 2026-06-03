@@ -3,210 +3,314 @@
 
 {% block content %}
 
-<main class="pd-page">
-    <div class="container">
+<header class="product-only-header">
+    <div class="product-only-header__inner">
 
-        <div class="pd-breadcrumbs">
-            <a href="{% url 'shop:complete_skateboards' %}">Complete Skateboards</a>
-            <span>›</span>
-            <span>{{ product.brand }} {{ product.name }}</span>
+        <a href="{% url 'shop:home' %}" class="product-only-header__logo">
+            <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+        </a>
+
+        <nav class="product-only-header__nav">
+            <a href="{% url 'shop:home' %}">SHOP</a>
+            <a href="{% url 'shop:categories' %}">CATEGORIES</a>
+            <a href="#">BUILD YOUR SKATE</a>
+            <a href="#">BRANDS</a>
+            <a href="#">ABOUT</a>
+        </nav>
+
+        <div class="product-only-header__actions">
+            <form class="product-only-header__search" action="#" method="get">
+                <input type="search" placeholder="Search...">
+                <button type="submit">
+                    <img src="{% static 'images/icons/search.svg' %}" alt="Search">
+                </button>
+            </form>
+
+            <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}" class="product-only-header__icon">
+                <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+            </a>
+
+            {% if request.user.is_authenticated %}
+    <a href="{% url 'shop:favorites' %}" class="product-only-header__icon">
+        <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+    </a>
+{% else %}
+    <a href="{% url 'shop:register' %}" class="product-only-header__icon">
+        <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+    </a>
+{% endif %}
+
+            <a href="{% url 'shop:cart_detail' %}" class="product-only-header__icon">
+                <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+            </a>
         </div>
 
-        <section class="pd-hero">
-
-            <div class="pd-gallery">
-                <div class="pd-thumbs">
-                    {% if gallery_images %}
-                        {% for image in gallery_images %}
-                            <button type="button" class="pd-thumb {% if forloop.first %}is-active{% endif %}">
-                                <img src="{{ image.image.url }}"
-                                     alt="{{ image.alt_text|default:product.name }}"
-                                     data-full="{{ image.image.url }}">
-                            </button>
-                        {% endfor %}
-                    {% else %}
-                        <button type="button" class="pd-thumb is-active">
-                            <img src="{% static 'images/product-details/santa-cruz/santa-cruz-1.png' %}"
-                                 alt="{{ product.name }}"
-                                 data-full="{% static 'images/product-details/santa-cruz/santa-cruz-1.png' %}">
-                        </button>
-
-                        <button type="button" class="pd-thumb">
-                            <img src="{% static 'images/product-details/santa-cruz/santa-cruz-2.png' %}"
-                                 alt="{{ product.name }}"
-                                 data-full="{% static 'images/product-details/santa-cruz/santa-cruz-2.png' %}">
-                        </button>
-
-                        <button type="button" class="pd-thumb">
-                            <img src="{% static 'images/product-details/santa-cruz/santa-cruz-3.png' %}"
-                                 alt="{{ product.name }}"
-                                 data-full="{% static 'images/product-details/santa-cruz/santa-cruz-3.png' %}">
-                        </button>
-
-                        <button type="button" class="pd-thumb">
-                            <img src="{% static 'images/product-details/santa-cruz/santa-cruz-4.png' %}"
-                                 alt="{{ product.name }}"
-                                 data-full="{% static 'images/product-details/santa-cruz/santa-cruz-4.png' %}">
-                        </button>
-                    {% endif %}
-                </div>
-
-                <div class="pd-main-image">
-                    {% if gallery_images %}
-                        <img id="mainProductImage" src="{{ gallery_images.0.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <img id="mainProductImage"
-                             src="{% static 'images/product-details/santa-cruz/santa-cruz-1.png' %}"
-                             alt="{{ product.name }}">
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="pd-info">
-                <h1 class="pd-title">
-                    {{ product.brand }}<br>
-                    {{ product.name }}
-                </h1>
-
-                <div class="pd-price">
-                    {% if product.price_display %}
-                        {{ product.price_display }}
-                    {% else %}
-                        ${{ product.price }}
-                    {% endif %}
-                </div>
-
-                <div class="pd-meta">
-                    <div class="pd-rating">
-                        <span class="pd-stars">★★★★☆</span>
-                        <span>4.8 (32 reviews)</span>
-                    </div>
-
-                    <div class="pd-stock">
-                        <span></span>
-                        In Stock
-                    </div>
-                </div>
-
-                <p class="pd-desc">
-                    {{ product.description }}
-                </p>
-
-                <div class="pd-option">
-                    <h3>Width</h3>
-
-                    <div class="pd-widths">
-                        <button type="button">7.75"</button>
-                        <button type="button" class="is-active">8.0"</button>
-                        <button type="button">8.25"</button>
-                    </div>
-                </div>
-
-                <form method="post" action="{% url 'shop:cart_add' product.id %}" class="pd-cart-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.path }}">
-
-                    <div class="pd-option pd-qty-option">
-                        <h3>Quantity</h3>
-
-                        <div class="pd-qty">
-                            <button type="button" class="pd-minus">−</button>
-                            <input type="number" name="quantity" value="1" min="1">
-                            <button type="button" class="pd-plus">+</button>
-                        </div>
-                    </div>
-
-                    <div class="pd-actions">
-                        <button type="submit" class="pd-add">ADD TO CART</button>
-                        <button type="button" class="pd-heart" aria-label="Add to wishlist">♡</button>
-                    </div>
-                </form>
-
-                <div class="pd-benefits">
-                    <div class="pd-benefit">
-                        <span class="pd-benefit-icon">▱</span>
-                        <div>
-                            <h4>Free Shipping</h4>
-                            <p>Free shipping on all orders over $99</p>
-                        </div>
-                    </div>
-
-                    <div class="pd-benefit">
-                        <span class="pd-benefit-icon">▢</span>
-                        <div>
-                            <h4>Secure Payment</h4>
-                            <p>100% secure checkout & data protection</p>
-                        </div>
-                    </div>
-
-                    <div class="pd-benefit">
-                        <span class="pd-benefit-icon">☆</span>
-                        <div>
-                            <h4>Top Rated</h4>
-                            <p>Rated 4.8/5 by 500+ customers</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
-        <section class="pd-tabs">
-            <div class="pd-tabs-nav">
-                <button type="button" class="is-active" data-tab="description">Description</button>
-                <button type="button" data-tab="specifications">Specifications</button>
-                <button type="button" data-tab="reviews">Reviews (32)</button>
-            </div>
-
-            <div class="pd-tab is-active" id="description">
-                <p>{{ product.description }}</p>
-
-                {% if specifications %}
-                    <ul>
-                        {% for spec in specifications %}
-                            <li>{{ spec.text }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <ul>
-                        <li>Deck Width: 8.0”</li>
-                        <li>Deck Material: 7-ply maple</li>
-                        <li>Trucks: standard trucks</li>
-                    </ul>
-                {% endif %}
-            </div>
-
-            <div class="pd-tab" id="specifications">
-                {% if specifications %}
-                    <ul>
-                        {% for spec in specifications %}
-                            <li>{{ spec.text }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <ul>
-                        <li>Deck Width: 8.0”</li>
-                        <li>Deck Material: 7-ply maple</li>
-                        <li>Trucks: standard trucks</li>
-                    </ul>
-                {% endif %}
-            </div>
-
-            <div class="pd-tab" id="reviews">
-                <p>Customer reviews will appear here.</p>
-            </div>
-        </section>
-
     </div>
+</header>
+<main class="sl-product-page">
 
-    <section class="pd-related-section">
+    <section class="sl-product-section">
         <div class="container">
+
+            <div class="sl-product-breadcrumbs">
+                <a href="{% url 'shop:complete_skateboards' %}">Complete Skateboards</a>
+                <span>›</span>
+                <span>{{ product.brand }} {{ product.name }}</span>
+            </div>
+
+            <div class="sl-product-layout">
+
+                
+                <div class="sl-product-left">
+
+                    <div class="sl-product-gallery">
+
+                        <div class="sl-product-thumbs">
+
+                            {% if product.image %}
+                                <button type="button" class="sl-product-thumb active">
+                                    <img
+                                        src="{{ product.image.url }}"
+                                        alt="{{ product.name }}"
+                                        data-full="{{ product.image.url }}"
+                                    >
+                                </button>
+                            {% endif %}
+
+                            {% if gallery_images %}
+                                {% for image in gallery_images %}
+                                    <button type="button" class="sl-product-thumb">
+                                        <img
+                                            src="{{ image.image.url }}"
+                                            alt="{{ image.alt_text|default:product.name }}"
+                                            data-full="{{ image.image.url }}"
+                                        >
+                                    </button>
+                                {% endfor %}
+                            {% else %}
+                                {% for image in product.gallery_images.all %}
+                                    <button type="button" class="sl-product-thumb">
+                                        <img
+                                            src="{{ image.image.url }}"
+                                            alt="{{ image.alt_text|default:product.name }}"
+                                            data-full="{{ image.image.url }}"
+                                        >
+                                    </button>
+                                {% endfor %}
+                            {% endif %}
+
+                        </div>
+
+                        <div class="sl-product-main-image">
+                            {% if product.image %}
+                                <img id="mainProductImage" src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% elif gallery_images %}
+                                <img id="mainProductImage" src="{{ gallery_images.0.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img id="mainProductImage" src="{% static 'images/products/product1.png' %}" alt="{{ product.name }}">
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+            
+                    <div class="sl-product-tabs">
+
+                        <div class="sl-product-tabs-nav">
+                            <button type="button" class="active" data-tab="description">Description</button>
+                            <button type="button" data-tab="specifications">Specifications</button>
+                            <button type="button" data-tab="reviews">Reviews (32)</button>
+                        </div>
+
+                        <div class="sl-product-tab active" id="description">
+                            <p>
+                                {% if product.long_description %}
+                                    {{ product.long_description }}
+                                {% else %}
+                                    {{ product.description }}
+                                {% endif %}
+                            </p>
+
+                            <ul>
+                                {% if specifications %}
+                                    {% for spec in specifications %}
+                                        <li>{{ spec.text }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for spec in product.specifications.all %}
+                                        <li>{{ spec.text }}</li>
+                                    {% empty %}
+                                        <li>Deck Width: 8.0"</li>
+                                        <li>Deck Material: 7-ply maple</li>
+                                        <li>Trucks: standard trucks</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <div class="sl-product-tab" id="specifications">
+                            <ul>
+                                {% if specifications %}
+                                    {% for spec in specifications %}
+                                        <li>{{ spec.text }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for spec in product.specifications.all %}
+                                        <li>{{ spec.text }}</li>
+                                    {% empty %}
+                                        <li>Deck Width: 8.0"</li>
+                                        <li>Deck Material: 7-ply maple</li>
+                                        <li>Trucks: standard trucks</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <div class="sl-product-tab" id="reviews">
+                            <p>Customer reviews will appear here.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+        
+                <div class="sl-product-info">
+
+                    <h1 class="sl-product-title">
+                        {{ product.brand }}<br>
+                        {{ product.name }}
+                    </h1>
+
+                    <div class="sl-product-price">
+                        {% if product.price_display %}
+                            {{ product.price_display }}
+                        {% else %}
+                            ${{ product.price }}
+                        {% endif %}
+                    </div>
+
+                    <div class="sl-product-meta">
+                        <div class="sl-product-rating">
+                            <span class="sl-stars">★★★★☆</span>
+                            <span>
+                                {% if product.rating %}
+                                    {{ product.rating }}
+                                {% else %}
+                                    4.8
+                                {% endif %}
+                                (
+                                {% if product.reviews %}
+                                    {{ product.reviews }}
+                                {% else %}
+                                    32
+                                {% endif %}
+                                reviews)
+                            </span>
+                        </div>
+
+                        <div class="sl-product-stock">
+                            <span></span>
+                            In Stock
+                        </div>
+                    </div>
+
+                    <p class="sl-product-description">
+                        {% if product.long_description %}
+                            {{ product.long_description }}
+                        {% else %}
+                            {{ product.description }}
+                        {% endif %}
+                    </p>
+
+                    <div class="sl-product-option">
+                        <h3>Width</h3>
+
+                        <div class="sl-width-options">
+                            <button type="button">7.75"</button>
+                            <button type="button" class="active">8.0"</button>
+                            <button type="button">8.25"</button>
+                        </div>
+                    </div>
+
+                    <form class="sl-product-cart-form" method="post" action="{% url 'shop:cart_add' product.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+
+                        <div class="sl-product-option sl-quantity-option">
+                            <h3>Quantity</h3>
+
+                            <div class="sl-quantity-box">
+                                <button type="button" class="sl-qty-minus">−</button>
+                                <input type="number" name="quantity" value="1" min="1">
+                                <button type="button" class="sl-qty-plus">+</button>
+                            </div>
+                        </div>
+
+                        <div class="sl-product-actions">
+                            <button type="submit" class="sl-add-cart-btn">ADD TO CART</button>
+                            {% if request.user.is_authenticated %}
+    <form method="post" action="{% url 'shop:toggle_favorite' product.id %}" class="sl-favorite-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="sl-wishlist-btn">
+            <img src="{% static 'images/icons/heart.svg' %}" alt="Favorite">
+        </button>
+    </form>
+{% else %}
+    <a href="{% url 'shop:register' %}" class="sl-wishlist-btn">
+        <img src="{% static 'images/icons/heart.svg' %}" alt="Favorite">
+    </a>
+{% endif %}
+                        </div>
+                    </form>
+
+                    <div class="sl-product-benefits">
+
+                        <div class="sl-product-benefit">
+                            <img class="sl-benefit-icon" src="{% static 'images/icons/truck.svg' %}" alt="">
+                            <div>
+                                <h4>Free Shipping</h4>
+                                <p>Free shipping on all orders over $99</p>
+                            </div>
+                        </div>
+
+                        <div class="sl-product-benefit">
+                            <img class="sl-benefit-icon" src="{% static 'images/icons/lock.svg' %}" alt="">
+                            <div>
+                                <h4>Secure Payment</h4>
+                                <p>100% secure checkout & data protection</p>
+                            </div>
+                        </div>
+
+                        <div class="sl-product-benefit">
+                            <img class="sl-benefit-icon" src="{% static 'images/icons/star.svg' %}" alt="">
+                            <div>
+                                <h4>Top Rated</h4>
+                                <p>Rated 4.8/5 by 500+ customers</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="sl-related-section">
+        <div class="container">
+
             <h2>YOU MAY ALSO LIKE</h2>
 
-            <div class="pd-related-grid">
+            <div class="sl-related-grid">
+
                 {% for item in related_products %}
-                    <article class="pd-related-card">
-                        <a href="{{ item.get_absolute_url }}" class="pd-related-img">
+                    <article class="sl-related-card">
+
+                        <a href="{{ item.get_absolute_url }}" class="sl-related-image">
                             {% if item.image %}
                                 <img src="{{ item.image.url }}" alt="{{ item.name }}">
                             {% else %}
@@ -216,7 +320,7 @@
 
                         <h3>{{ item.brand }}</h3>
                         <p>{{ item.name }}</p>
-                        <div class="pd-card-line"></div>
+                        <div class="sl-related-line"></div>
                         <p>{{ item.description }}</p>
 
                         <strong>
@@ -232,99 +336,110 @@
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <button type="submit">ADD TO CART</button>
                         </form>
+
                     </article>
                 {% empty %}
-                    <p class="pd-empty">No related products yet.</p>
+                    <p>No related products yet.</p>
                 {% endfor %}
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="sl-builder-section">
+        <div class="container">
+            <div class="sl-builder-banner" style="background-image: url('{% static 'images/categories/builder.jpg' %}');">
+
+                <img src="{% static 'images/icons/builder-icon.svg' %}" alt="">
+
+                <div class="sl-builder-text">
+                    <h2>WANT SOMETHING UNIQUE?</h2>
+                    <p>Build your own custom skateboard with our easy step-by-step skateboard builder.</p>
+                </div>
+
+                <a href="#">TRY THE BUILDER</a>
+
             </div>
         </div>
     </section>
 
-    <section class="pd-builder-section">
-        <div class="container">
-            <div class="pd-builder-banner" style="background-image: url('{% static 'images/categories/builder.jpg' %}');">
-                <img src="{% static 'images/icons/builder-icon.svg' %}" alt="">
-                <div>
-                    <h2>WANT SOMETHING UNIQUE?</h2>
-                    <p>Build your own custom skateboard with our easy step-by-step skateboard builder.</p>
-                </div>
-                <a href="#">TRY THE BUILDER</a>
-            </div>
-        </div>
-    </section>
 </main>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const thumbs = document.querySelectorAll('.pd-thumb');
+    const thumbs = document.querySelectorAll('.sl-product-thumb');
     const mainImage = document.getElementById('mainProductImage');
 
     thumbs.forEach(function (thumb) {
         thumb.addEventListener('click', function () {
-            const image = this.querySelector('img');
-            const full = image.getAttribute('data-full');
+            const img = thumb.querySelector('img');
+            const full = img.getAttribute('data-full');
 
             if (mainImage && full) {
                 mainImage.src = full;
             }
 
             thumbs.forEach(function (item) {
-                item.classList.remove('is-active');
+                item.classList.remove('active');
             });
 
-            this.classList.add('is-active');
+            thumb.classList.add('active');
         });
     });
 
-    const minus = document.querySelector('.pd-minus');
-    const plus = document.querySelector('.pd-plus');
-    const input = document.querySelector('.pd-qty input');
+    const minus = document.querySelector('.sl-qty-minus');
+    const plus = document.querySelector('.sl-qty-plus');
+    const qtyInput = document.querySelector('.sl-quantity-box input');
 
-    if (minus && plus && input) {
+    if (minus && plus && qtyInput) {
         minus.addEventListener('click', function () {
-            let value = parseInt(input.value) || 1;
+            let value = parseInt(qtyInput.value) || 1;
+
             if (value > 1) {
-                input.value = value - 1;
+                qtyInput.value = value - 1;
             }
         });
 
         plus.addEventListener('click', function () {
-            let value = parseInt(input.value) || 1;
-            input.value = value + 1;
+            let value = parseInt(qtyInput.value) || 1;
+            qtyInput.value = value + 1;
         });
     }
 
-    const widthButtons = document.querySelectorAll('.pd-widths button');
+    const widthButtons = document.querySelectorAll('.sl-width-options button');
 
     widthButtons.forEach(function (button) {
         button.addEventListener('click', function () {
             widthButtons.forEach(function (item) {
-                item.classList.remove('is-active');
+                item.classList.remove('active');
             });
-            this.classList.add('is-active');
+
+            button.classList.add('active');
         });
     });
 
-    const tabButtons = document.querySelectorAll('.pd-tabs-nav button');
-    const tabs = document.querySelectorAll('.pd-tab');
+    const tabButtons = document.querySelectorAll('.sl-product-tabs-nav button');
+    const tabs = document.querySelectorAll('.sl-product-tab');
 
     tabButtons.forEach(function (button) {
         button.addEventListener('click', function () {
-            const id = this.getAttribute('data-tab');
+            const tabId = button.getAttribute('data-tab');
 
             tabButtons.forEach(function (item) {
-                item.classList.remove('is-active');
+                item.classList.remove('active');
             });
 
-            tabs.forEach(function (item) {
-                item.classList.remove('is-active');
+            tabs.forEach(function (tab) {
+                tab.classList.remove('active');
             });
 
-            this.classList.add('is-active');
+            button.classList.add('active');
 
-            const active = document.getElementById(id);
-            if (active) {
-                active.classList.add('is-active');
+            const currentTab = document.getElementById(tabId);
+
+            if (currentTab) {
+                currentTab.classList.add('active');
             }
         });
     });

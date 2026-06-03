@@ -1,0 +1,49 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="account-page">
+    <div class="container">
+
+        <div class="account-top">
+            <div>
+                <h1>HEY,<br>{{ request.user.email|default:request.user.username|upper }}</h1>
+            </div>
+
+            <a href="{% url 'shop:logout' %}" class="account-logout">
+                LOG OUT
+            </a>
+        </div>
+
+        <div class="account-tabs">
+            <a href="{% url 'shop:profile' %}" class="account-tab">
+                User Data
+            </a>
+
+            <a href="{% url 'shop:orders' %}" class="account-tab active">
+                Order History
+            </a>
+
+            <a href="{% url 'shop:favorites' %}" class="account-tab">
+                Favorite Items
+            </a>
+        </div>
+
+        <div class="account-box">
+            <h2>Order History</h2>
+
+            <div class="orders-empty">
+                <h3>You don’t have any orders yet</h3>
+                <p>When you place an order, it will appear here.</p>
+
+                <a href="{% url 'shop:complete_skateboards' %}" class="account-btn">
+                    START SHOPPING
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

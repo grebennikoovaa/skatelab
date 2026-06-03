@@ -45,8 +45,15 @@
                         <a href="{% if request.user.is_authenticated %}{% url 'shop:profile' %}{% else %}{% url 'shop:register' %}{% endif %}">
                             <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
                         </a>
-                        <a href="#">
-                            <img src="{% static 'images/icons/heart.svg' %}" alt="Wishlist">
+                       {% if request.user.is_authenticated %}
+    <a href="{% url 'shop:favorites' %}" class="header-icon">
+        <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+    </a>
+{% else %}
+    <a href="{% url 'shop:register' %}" class="header-icon">
+        <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+    </a>
+{% endif %}
                         </a>
                         <a href="{% url 'shop:cart_detail' %}">
                             <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
