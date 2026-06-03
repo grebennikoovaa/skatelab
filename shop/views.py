@@ -1,25 +1,22 @@
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import timedelta
 from django.utils import timezone
-from decimal import Decimal
 
 from .forms import CustomerRegisterForm, CustomerLoginForm
-from .models import Category, Product
-from .models import Product, ProductGalleryImage, ProductSpecification
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .models import CustomerProfile, Favorite
-from .forms import CustomerProfileForm
-from django.contrib.auth import logout
+from .models import Category, Product, Favorite
 
+
+def money(value):
+    return Decimal(str(value))
 
 
 def home(request):
     products = Product.objects.filter(is_active=True)[:8]
-
     return render(request, 'shop/home.html', {
         'products': products
     })
@@ -27,7 +24,6 @@ def home(request):
 
 def categories(request):
     categories_list = Category.objects.filter(is_active=True)
-
     return render(request, 'shop/categories.html', {
         'categories': categories_list
     })
@@ -90,7 +86,12 @@ def complete_skateboards(request):
 
 
 def product_detail(request, slug):
-    product = get_object_or_404(Product, slug=slug)
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+
+    related_products = Product.objects.filter(
+        category=product.category,
+        is_active=True
+    ).exclude(id=product.id)[:4]
 
     is_favorite = False
 
@@ -102,8 +103,10 @@ def product_detail(request, slug):
 
     return render(request, 'shop/product_detail.html', {
         'product': product,
+        'related_products': related_products,
         'is_favorite': is_favorite,
     })
+
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -161,35 +164,138 @@ def login_view(request):
     })
 
 
-@login_required
+@login_required(login_url='shop:login')
 def profile_view(request):
-    customer_profile, created = CustomerProfile.objects.get_or_create(
-        user=request.user
+    display_name = (
+        request.user.first_name
+        or request.user.username.split('@')[0]
+        or request.user.email.split('@')[0]
     )
 
-    favorites_count = Favorite.objects.filter(user=request.user).count()
-
-    if request.method == 'POST':
-        form = CustomerProfileForm(
-            request.POST,
-            user=request.user,
-            customer_profile=customer_profile
-        )
-
-        if form.is_valid():
-            form.save()
-            return redirect('shop:profile')
-    else:
-        form = CustomerProfileForm(
-            user=request.user,
-            customer_profile=customer_profile
-        )
-
     return render(request, 'shop/profile.html', {
-        'form': form,
-        'customer_profile': customer_profile,
-        'favorites_count': favorites_count,
+        'display_name': display_name,
     })
+
+
+@login_required(login_url='shop:login')
+def orders_page(request):
+    display_name = (
+        request.user.first_name
+        or request.user.username.split('@')[0]
+        or request.user.email.split('@')[0]
+    )
+
+    return render(request, 'shop/orders.html', {
+        'display_name': display_name,
+    })
+
+
+@login_required(login_url='shop:login')
+def favorites_page(request):
+    favorites = Favorite.objects.filter(
+        user=request.user
+    ).select_related('product')
+
+    display_name = (
+        request.user.first_name
+        or request.user.username.split('@')[0]
+        or request.user.email.split('@')[0]
+    )
+
+    return render(request, 'shop/favorites.html', {
+        'favorites': favorites,
+        'display_name': display_name,
+    })
+
+
+@login_required(login_url='shop:login')
+def toggle_favorite(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+
+    favorite = Favorite.objects.filter(
+        user=request.user,
+        product=product
+    ).first()
+
+    if favorite:
+        favorite.delete()
+    else:
+        Favorite.objects.create(
+            user=request.user,
+            product=product
+        )
+
+    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'shop:favorites'
+    return redirect(next_url)
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You are logged out.')
+    return redirect('shop:home')
+
+
+def custom_404_preview(request):
+    return render(request, '404.html', status=404)
+
+
+def get_cart(request):
+    cart = request.session.get('cart')
+
+    if cart is None:
+        cart = {}
+        request.session['cart'] = cart
+
+    return cart
+
+
+def get_cart_data(request):
+    cart = get_cart(request)
+
+    cart_items = []
+    total_price = Decimal('0.00')
+    total_quantity = 0
+
+    for product_id, item in cart.items():
+        product = Product.objects.filter(id=product_id, is_active=True).first()
+
+        if product is None:
+            continue
+
+        try:
+            quantity = int(item.get('quantity', 1))
+        except (TypeError, ValueError):
+            quantity = 1
+
+        if quantity < 1:
+            quantity = 1
+
+        price = money(item.get('price', product.price))
+        item_total = price * quantity
+
+        cart_items.append({
+            'product': product,
+            'quantity': quantity,
+            'price': price,
+            'item_total': item_total,
+        })
+
+        total_price += item_total
+        total_quantity += quantity
+
+    shipping = Decimal('9.99') if total_quantity > 0 else Decimal('0.00')
+    tax = Decimal('8.00') if total_quantity > 0 else Decimal('0.00')
+    final_total = total_price + shipping + tax
+
+    return {
+        'cart': cart,
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'total_quantity': total_quantity,
+        'shipping': shipping,
+        'tax': tax,
+        'final_total': final_total,
+    }
 
 
 def cart_add(request, product_id):
@@ -198,12 +304,20 @@ def cart_add(request, product_id):
 
     product_id_str = str(product.id)
 
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except (TypeError, ValueError):
+        quantity = 1
+
+    if quantity < 1:
+        quantity = 1
+
     if product_id_str in cart:
-        cart[product_id_str]['quantity'] += 1
+        cart[product_id_str]['quantity'] += quantity
     else:
         cart[product_id_str] = {
-            'quantity': 1,
-            'price': product.price,
+            'quantity': quantity,
+            'price': str(product.price),
         }
 
     request.session['cart'] = cart
@@ -231,11 +345,9 @@ def cart_update(request, product_id):
     product_id_str = str(product_id)
 
     if request.method == 'POST':
-        quantity = request.POST.get('quantity', 1)
-
         try:
-            quantity = int(quantity)
-        except ValueError:
+            quantity = int(request.POST.get('quantity', 1))
+        except (TypeError, ValueError):
             quantity = 1
 
         if quantity <= 0:
@@ -245,8 +357,8 @@ def cart_update(request, product_id):
             if product_id_str in cart:
                 cart[product_id_str]['quantity'] = quantity
 
-    request.session['cart'] = cart
-    request.session.modified = True
+        request.session['cart'] = cart
+        request.session.modified = True
 
     return redirect('shop:cart_detail')
 
@@ -259,128 +371,51 @@ def cart_clear(request):
 
 
 def cart_detail(request):
-    cart = get_cart(request)
-
-    cart_items = []
-    total_price = 0
-    total_quantity = 0
-
-    for product_id, item in cart.items():
-        product = Product.objects.filter(id=product_id, is_active=True).first()
-
-        if product is None:
-            continue
-
-        quantity = item.get('quantity', 1)
-        item_total = product.price * quantity
-
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'item_total': item_total,
-        })
-
-        total_price += item_total
-        total_quantity += quantity
-
-    shipping = 9.99
-    tax = 8
-    final_total = total_price + shipping + tax
+    cart_data = get_cart_data(request)
 
     return render(request, 'shop/cart.html', {
-        'cart_items': cart_items,
-        'total_price': total_price,
-        'total_quantity': total_quantity,
-        'shipping': shipping,
-        'tax': tax,
-        'final_total': final_total,
+        'cart_items': cart_data['cart_items'],
+        'total_price': cart_data['total_price'],
+        'total_quantity': cart_data['total_quantity'],
+        'shipping': cart_data['shipping'],
+        'tax': cart_data['tax'],
+        'final_total': cart_data['final_total'],
     })
 
+
 def checkout(request):
-    cart = get_cart(request)
+    cart_data = get_cart_data(request)
 
-    cart_items = []
-    total_price = 0
-    total_quantity = 0
-
-    for product_id, item in cart.items():
-        product = Product.objects.filter(id=product_id, is_active=True).first()
-
-        if product is None:
-            continue
-
-        quantity = item.get('quantity', 1)
-        item_total = product.price * quantity
-
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'item_total': item_total,
-        })
-
-        total_price += item_total
-        total_quantity += quantity
-
-    if total_quantity == 0:
+    if cart_data['total_quantity'] == 0:
         return redirect('shop:cart_detail')
 
-    shipping = 9.99
-    tax = 8
-    final_total = total_price + shipping + tax
-
     if request.method == 'POST':
-        full_name = request.POST.get('full_name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-
         request.session['checkout_contact'] = {
-            'full_name': full_name,
-            'email': email,
-            'phone': phone,
+            'full_name': request.POST.get('full_name', '').strip(),
+            'email': request.POST.get('email', '').strip(),
+            'phone': request.POST.get('phone', '').strip(),
         }
 
         request.session.modified = True
-
         return redirect('shop:shipping')
 
     return render(request, 'shop/checkout.html', {
-        'cart_items': cart_items,
-        'total_price': total_price,
-        'total_quantity': total_quantity,
-        'shipping': shipping,
-        'tax': tax,
-        'final_total': final_total,
+        'cart_items': cart_data['cart_items'],
+        'total_price': cart_data['total_price'],
+        'total_quantity': cart_data['total_quantity'],
+        'shipping': cart_data['shipping'],
+        'tax': cart_data['tax'],
+        'final_total': cart_data['final_total'],
     })
 
+
 def shipping(request):
-    cart = get_cart(request)
+    cart_data = get_cart_data(request)
 
-    cart_items = []
-    total_price = 0
-    total_quantity = 0
-
-    for product_id, item in cart.items():
-        product = Product.objects.filter(id=product_id, is_active=True).first()
-
-        if product is None:
-            continue
-
-        quantity = item.get('quantity', 1)
-        item_total = product.price * quantity
-
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'item_total': item_total,
-        })
-
-        total_price += item_total
-        total_quantity += quantity
-
-    if total_quantity == 0:
+    if cart_data['total_quantity'] == 0:
         return redirect('shop:cart_detail')
 
-    
+    if request.method == 'POST':
         full_name = request.POST.get('full_name', '').strip()
         country = request.POST.get('country', '').strip()
         region = request.POST.get('region', '').strip()
@@ -400,7 +435,7 @@ def shipping(request):
             address_parts.append(building)
 
         if apartment:
-            address_parts.append(f"apt. {apartment}")
+            address_parts.append(f'apt. {apartment}')
 
         if city:
             address_parts.append(city)
@@ -414,7 +449,7 @@ def shipping(request):
         if country:
             address_parts.append(country)
 
-        shipping_address = ", ".join(address_parts) if address_parts else "Address not provided"
+        shipping_address = ', '.join(address_parts) if address_parts else 'Address not provided'
 
         request.session['shipping_address'] = shipping_address
         request.session['shipping_data'] = {
@@ -432,101 +467,56 @@ def shipping(request):
         request.session.modified = True
 
         return redirect('shop:payment')
-        
-
-        
-
 
     return render(request, 'shop/shipping.html', {
-        'cart_items': cart_items,
-        'total_price': total_price,
-        'total_quantity': total_quantity,
+        'cart_items': cart_data['cart_items'],
+        'total_price': cart_data['total_price'],
+        'total_quantity': cart_data['total_quantity'],
+        'shipping': cart_data['shipping'],
+        'tax': cart_data['tax'],
+        'final_total': cart_data['final_total'],
     })
 
-def get_order_address(request):
-    shipping_address = request.session.get('shipping_address', '')
-
-    if isinstance(shipping_address, dict):
-        street = shipping_address.get('street', '')
-        building = shipping_address.get('building', '')
-        apartment = shipping_address.get('apartment', '')
-        city = shipping_address.get('city', '')
-        zip_code = shipping_address.get('zip_code', '')
-        country = shipping_address.get('country', '')
-
-        parts = []
-
-        if street:
-            parts.append(street)
-
-        if building:
-            parts.append(building)
-
-        if apartment:
-            parts.append(f'apt. {apartment}')
-
-        if city:
-            parts.append(city)
-
-        if zip_code:
-            parts.append(zip_code)
-
-        if country:
-            parts.append(country)
-
-        address = ', '.join(parts)
-
-        return address if address else 'Address not provided'
-
-    if shipping_address:
-        return shipping_address
-
-    return 'Address not provided'
 
 def payment(request):
-    cart = request.session.get('cart', {})
+    cart_data = get_cart_data(request)
 
-    cart_items = []
-    subtotal = Decimal('0.00')
-    cart_count = 0
-
-    for product_id, item in cart.items():
-        product = get_object_or_404(Product, id=product_id)
-
-        quantity = int(item.get('quantity', 1))
-        price = Decimal(str(item.get('price', product.price)))
-        total = price * quantity
-
-        cart_items.append({
-            'id': product.id,
-            'name': product.name,
-            'brand': product.brand,
-            'width': getattr(product, 'width', '7.0'),
-            'price': str(price),
-            'quantity': quantity,
-            'total': str(total),
-            'image_url': product.image.url if getattr(product, 'image', None) else '',
-        })
-
-        subtotal += total
-        cart_count += quantity
-
-    shipping = Decimal('9.99') if subtotal > 0 else Decimal('0.00')
-    tax = Decimal('8.00') if subtotal > 0 else Decimal('0.00')
-    total_amount = subtotal + shipping + tax
+    if cart_data['total_quantity'] == 0:
+        return redirect('shop:cart_detail')
 
     if request.method == 'POST':
+        payment_method = request.POST.get('payment_method', 'Pay')
+
+        order_items = []
+
+        for item in cart_data['cart_items']:
+            product = item['product']
+
+            order_items.append({
+                'id': product.id,
+                'brand': product.brand,
+                'name': product.name,
+                'description': product.description,
+                'width': product.width,
+                'price': str(item['price']),
+                'quantity': item['quantity'],
+                'total': str(item['item_total']),
+                'image_url': product.image.url if product.image else '',
+            })
+
+        delivery_date = timezone.now().date() + timedelta(days=2)
+
         request.session['last_order'] = {
-            'items': cart_items,
-            'cart_count': cart_count,
-            'subtotal': str(subtotal),
-            'shipping': str(shipping),
-            'tax': str(tax),
-            'total': str(total_amount),
-            'delivery_date': 'June 02, 2026',
             'order_id': '10300849',
-            'payment_method': 'Pay',
-            'address': get_order_address(request),
+            'delivery_date': delivery_date.strftime('%B %d, %Y'),
+            'payment_method': payment_method,
+            'address': request.session.get('shipping_address', 'Address not provided'),
+            'items': order_items,
+            'cart_count': cart_data['total_quantity'],
+            'subtotal': str(cart_data['total_price']),
+            'shipping': str(cart_data['shipping']),
+            'tax': str(cart_data['tax']),
+            'total': str(cart_data['final_total']),
         }
 
         request.session['cart'] = {}
@@ -535,162 +525,46 @@ def payment(request):
         return redirect('shop:order_confirmation')
 
     return render(request, 'shop/payment.html', {
-        'cart_items': cart_items,
-        'cart_count': cart_count,
-        'subtotal': subtotal,
-        'shipping': shipping,
-        'tax': tax,
-        'total': total_amount,
+        'cart_items': cart_data['cart_items'],
+        'total_price': cart_data['total_price'],
+        'total_quantity': cart_data['total_quantity'],
+        'shipping': cart_data['shipping'],
+        'tax': cart_data['tax'],
+        'final_total': cart_data['final_total'],
     })
-
-from decimal import Decimal
-from django.shortcuts import render
 
 
 def order_confirmation(request):
     order = request.session.get('last_order')
 
     if not order:
-        return render(request, 'shop/order_confirmation.html', {
-            'cart_items': [],
-            'cart_count': 0,
-            'subtotal': Decimal('0.00'),
-            'total': Decimal('0.00'),
-            'delivery_date': 'June 02, 2026',
-            'order_id': '10300849',
-            'payment_method': 'Pay',
-            'address': '6391 Elgin St....',
-        })
+        return redirect('shop:home')
 
     cart_items = []
 
     for item in order.get('items', []):
-        price = Decimal(str(item.get('price', '0')))
-        total = Decimal(str(item.get('total', '0')))
-
         cart_items.append({
             'id': item.get('id'),
-            'name': item.get('name'),
             'brand': item.get('brand'),
-            'width': item.get('width', '7.0'),
-            'price': price,
-            'quantity': item.get('quantity', 1),
-            'total': total,
+            'name': item.get('name'),
+            'description': item.get('description'),
+            'width': item.get('width', '7.0"'),
+            'price': money(item.get('price', '0')),
+            'quantity': int(item.get('quantity', 1)),
+            'total': money(item.get('total', '0')),
             'image_url': item.get('image_url', ''),
         })
 
     return render(request, 'shop/order_confirmation.html', {
+        'order': order,
         'cart_items': cart_items,
         'cart_count': order.get('cart_count', 0),
-        'subtotal': Decimal(str(order.get('subtotal', '0'))),
-        'shipping': Decimal(str(order.get('shipping', '0'))),
-        'tax': Decimal(str(order.get('tax', '0'))),
-        'total': Decimal(str(order.get('total', '0'))),
+        'subtotal': money(order.get('subtotal', '0')),
+        'shipping': money(order.get('shipping', '0')),
+        'tax': money(order.get('tax', '0')),
+        'total': money(order.get('total', '0')),
         'delivery_date': order.get('delivery_date', 'June 02, 2026'),
         'order_id': order.get('order_id', '10300849'),
         'payment_method': order.get('payment_method', 'Pay'),
-        'address': order.get('address', '6391 Elgin St....'),
-    })
-
-@login_required
-def toggle_favorite(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    favorite, created = Favorite.objects.get_or_create(
-        user=request.user,
-        product=product
-    )
-
-    if not created:
-        favorite.delete()
-
-    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or '/'
-
-    return redirect(next_url)
-
-@login_required
-def orders_page(request):
-    return render(request, 'shop/orders.html')
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('shop:home')
-
-def custom_404_preview(request):
-    return render(request, '404.html', status=404)
-
-def get_cart(request):
-    cart = request.session.get('cart')
-
-    if cart is None:
-        cart = {}
-        request.session['cart'] = cart
-
-    return cart
-
-
-def cart_add(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    cart = get_cart(request)
-
-    product_id_str = str(product.id)
-
-    if product_id_str in cart:
-        cart[product_id_str]['quantity'] += 1
-    else:
-        cart[product_id_str] = {
-            'quantity': 1,
-            'price': str(product.price),
-        }
-
-    request.session['cart'] = cart
-    request.session.modified = True
-
-    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'shop:cart_detail'
-    return redirect(next_url)
-
-@login_required
-def favorites_page(request):
-    favorites = Favorite.objects.filter(user=request.user).select_related('product')
-    display_name = request.user.first_name or request.user.username.split('@')[0]
-
-    return render(request, 'shop/favorites.html', {
-        'favorites': favorites,
-        'display_name': display_name,
-    })
-
-@login_required
-def toggle_favorite(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    favorite = Favorite.objects.filter(
-        user=request.user,
-        product=product
-    ).first()
-
-    if favorite:
-        favorite.delete()
-    else:
-        Favorite.objects.create(
-            user=request.user,
-            product=product
-        )
-
-    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'shop:favorites'
-    return redirect(next_url)
-
-
-@login_required
-def favorites_page(request):
-    favorites = Favorite.objects.filter(
-        user=request.user
-    ).select_related('product')
-
-    display_name = request.user.first_name or request.user.username.split('@')[0]
-
-    return render(request, 'shop/favorites.html', {
-        'favorites': favorites,
-        'display_name': display_name,
+        'address': order.get('address', 'Address not provided'),
     })
