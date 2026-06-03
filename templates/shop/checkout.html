@@ -180,24 +180,24 @@
 
                 <div class="checkout-summary-line">
                     <span>Subtotal</span>
-                    <strong>${{ total_price }}</strong>
+                    <strong>${{ total_price|floatformat:0 }}</strong>
                 </div>
 
                 <div class="checkout-summary-line">
                     <span>Shipping</span>
-                    <strong>$ {{ shipping }}</strong>
+                    <strong>${{ shipping|floatformat:2 }}</strong>
                 </div>
 
                 <div class="checkout-summary-line">
                     <span>Estimated tax</span>
-                    <strong>${{ tax }}.00</strong>
+                    <strong>${{ tax|floatformat:2 }}</strong>
                 </div>
 
                 <div class="checkout-summary-divider"></div>
 
                 <div class="checkout-summary-total">
                     <span>Total</span>
-                    <strong>${{ final_total }}</strong>
+                    <strong>${{ final_total|floatformat:2 }}</strong>
                 </div>
 
                 <div class="checkout-summary-divider"></div>
