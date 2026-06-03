@@ -54,7 +54,7 @@
         <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
     </a>
 {% endif %}
-                        <a href="#">
+                        <a href="{% url 'shop:cart_detail' %}">
                             <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
                         </a>
                     </div>

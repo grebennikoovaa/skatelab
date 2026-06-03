@@ -380,22 +380,62 @@ def shipping(request):
     if total_quantity == 0:
         return redirect('shop:cart_detail')
 
-    if request.method == 'POST':
-        request.session['shipping_address'] = {
-            'full_name': request.POST.get('full_name'),
-            'country': request.POST.get('country'),
-            'region': request.POST.get('region'),
-            'street': request.POST.get('street'),
-            'building': request.POST.get('building'),
-            'apartment': request.POST.get('apartment'),
-            'city': request.POST.get('city'),
-            'zip_code': request.POST.get('zip_code'),
-            'shipping_method': request.POST.get('shipping_method'),
+    
+        full_name = request.POST.get('full_name', '').strip()
+        country = request.POST.get('country', '').strip()
+        region = request.POST.get('region', '').strip()
+        street = request.POST.get('street', '').strip()
+        building = request.POST.get('building', '').strip()
+        apartment = request.POST.get('apartment', '').strip()
+        city = request.POST.get('city', '').strip()
+        zip_code = request.POST.get('zip_code', '').strip()
+        shipping_method = request.POST.get('shipping_method', '').strip()
+
+        address_parts = []
+
+        if street:
+            address_parts.append(street)
+
+        if building:
+            address_parts.append(building)
+
+        if apartment:
+            address_parts.append(f"apt. {apartment}")
+
+        if city:
+            address_parts.append(city)
+
+        if region:
+            address_parts.append(region)
+
+        if zip_code:
+            address_parts.append(zip_code)
+
+        if country:
+            address_parts.append(country)
+
+        shipping_address = ", ".join(address_parts) if address_parts else "Address not provided"
+
+        request.session['shipping_address'] = shipping_address
+        request.session['shipping_data'] = {
+            'full_name': full_name,
+            'country': country,
+            'region': region,
+            'street': street,
+            'building': building,
+            'apartment': apartment,
+            'city': city,
+            'zip_code': zip_code,
+            'shipping_method': shipping_method,
         }
 
         request.session.modified = True
 
         return redirect('shop:payment')
+        
+
+        
+
 
     return render(request, 'shop/shipping.html', {
         'cart_items': cart_items,
@@ -403,7 +443,45 @@ def shipping(request):
         'total_quantity': total_quantity,
     })
 
+def get_order_address(request):
+    shipping_address = request.session.get('shipping_address', '')
 
+    if isinstance(shipping_address, dict):
+        street = shipping_address.get('street', '')
+        building = shipping_address.get('building', '')
+        apartment = shipping_address.get('apartment', '')
+        city = shipping_address.get('city', '')
+        zip_code = shipping_address.get('zip_code', '')
+        country = shipping_address.get('country', '')
+
+        parts = []
+
+        if street:
+            parts.append(street)
+
+        if building:
+            parts.append(building)
+
+        if apartment:
+            parts.append(f'apt. {apartment}')
+
+        if city:
+            parts.append(city)
+
+        if zip_code:
+            parts.append(zip_code)
+
+        if country:
+            parts.append(country)
+
+        address = ', '.join(parts)
+
+        return address if address else 'Address not provided'
+
+    if shipping_address:
+        return shipping_address
+
+    return 'Address not provided'
 
 def payment(request):
     cart = request.session.get('cart', {})
@@ -448,7 +526,7 @@ def payment(request):
             'delivery_date': 'June 02, 2026',
             'order_id': '10300849',
             'payment_method': 'Pay',
-            'address': request.session.get('shipping_address', '6391 Elgin St....'),
+            'address': get_order_address(request),
         }
 
         request.session['cart'] = {}

@@ -3,7 +3,168 @@
 
 {% block content %}
 
+<header class="fav-header">
+    <div class="fav-header-container">
+
+        <a class="navbar-brand catalog-logo" href="{% url 'shop:home' %}">
+                <img src="{% static 'images/logodark.svg' %}" alt="SkateLab">
+            </a>
+
+        <nav class="fav-nav">
+            <a href="{% url 'shop:complete_skateboards' %}">SHOP</a>
+            <a href="{% url 'shop:categories' %}">CATEGORIES</a>
+            <a href="#">BUILD YOUR SKATE</a>
+            <a href="#">BRANDS</a>
+            <a href="#">ABOUT</a>
+        </nav>
+
+        <div class="fav-header-actions">
+            <form class="fav-search" method="get" action="#">
+                <input type="text" placeholder="Search...">
+                <button type="submit">
+                    <img src="{% static 'images/icons/search.svg' %}" alt="Search">
+                </button>
+            </form>
+
+            <a href="{% url 'shop:profile' %}" class="fav-header-icon">
+                <img src="{% static 'images/icons/profile.svg' %}" alt="Profile">
+            </a>
+
+            <a href="{% url 'shop:favorites' %}" class="fav-header-icon">
+                <img src="{% static 'images/icons/heart.svg' %}" alt="Favorites">
+            </a>
+
+            <a href="{% url 'shop:cart_detail' %}" class="fav-header-icon">
+                <img src="{% static 'images/icons/cart.svg' %}" alt="Cart">
+            </a>
+        </div>
+
+    </div>
+</header>
+
 <style>
+    /* FAVORITES HEADER */
+
+.fav-header {
+    width: 100%;
+    height: 88px;
+    background: #ffffff;
+    border-bottom: 1px solid #2d292d;
+}
+
+.fav-header-container {
+    width: 100%;
+    max-width: 1180px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fav-logo {
+    color: #2d292d;
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: 400;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    line-height: 1;
+}
+
+.fav-nav {
+    display: flex;
+    align-items: center;
+    gap: 54px;
+}
+
+.fav-nav a {
+    color: #2d292d;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.fav-nav a:hover {
+    opacity: 0.6;
+}
+
+.fav-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.fav-search {
+    width: 185px;
+    height: 38px;
+    background: #f0f0f0;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 18px;
+}
+
+.fav-search input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #2d292d;
+    font-size: 13px;
+}
+
+.fav-search button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.fav-search img {
+    width: 17px;
+    height: 17px;
+}
+
+.fav-header-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fav-header-icon img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+@media (max-width: 900px) {
+    .fav-header {
+        height: auto;
+        padding: 20px 0;
+    }
+
+    .fav-header-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .fav-nav {
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .fav-header-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
 .favorites-page {
     background: #ffffff;
     color: #2d292d;

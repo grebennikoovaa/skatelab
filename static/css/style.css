@@ -4210,8 +4210,9 @@ img {
 }
 
 .sl-product-main-image img {
-    max-width: 350px;
-    max-height: 460px;
+    width: 520px;
+    max-width: 100%;
+    height: auto;
     object-fit: contain;
 }
 
@@ -5336,9 +5337,6 @@ img {
     }
 }
 
-/* =========================================================
-   EDITABLE PROFILE PAGE
-========================================================= */
 
 .profile-edit-form {
     margin: 0;
@@ -6106,3 +6104,4 @@ img {
 .product-favorite-form {
     margin: 0;
 }
+
