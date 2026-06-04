@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Product, ProductGalleryImage, ProductSpecification, Favorite
+from .models import Product, ProductGalleryImage, ProductSpecification, Favorite, Category
 
+admin.site.register(Category)
 
 class ProductGalleryImageInline(admin.TabularInline):
     model = ProductGalleryImage
@@ -92,3 +93,5 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_filter = (
         'created_at',
     )
+
+
